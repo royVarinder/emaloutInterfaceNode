@@ -46,6 +46,10 @@ app.post("/uploadImages", upload.array('profile'), (req, res)=>{
 app.listen(process.env.APP_PORT, ()=>{
     console.log('Your app is running on port:',process.env.APP_PORT);
 });
-
+app.get("/", (req, res) => {
+    
+    console.log(__dirname)
+    res.sendFile(`${__dirname}/view/index.html`)
+});
 
 
