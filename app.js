@@ -6,7 +6,7 @@ const path = require("path");
 const userRouter = require("./api/api_adminUsers/adminUser.Router");
 const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
 const bussCategories = require("./api/api_bussCategories/bussCategories.Router");
-// const cors = require("cors");
+const cors = require("cors");
 
 const storage = multer.diskStorage({
     destination : './upload/images',
@@ -21,7 +21,7 @@ const upload = multer({
 
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
-// app.use(cors());
+app.use(cors());
 app.use("/api/api_adminUsers", userRouter);
 app.use("/api/api_bussness", userBussRouter);
 app.use("/api/api_bussCategories", bussCategories);

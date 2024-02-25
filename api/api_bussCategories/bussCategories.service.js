@@ -54,7 +54,7 @@ module.exports = {
 //         'create_time_stamp',
 //         'buss_images');
 serviceGetBussCategories : callback=>{
-        pool.query(`select * from emalout_all_buss_categories`,
+        pool.query(`select * from emalout_all_buss_categories where status = "1"`,
         [],
         (err, results, fields)=>{
             if(err){

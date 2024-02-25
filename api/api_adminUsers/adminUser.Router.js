@@ -1,11 +1,25 @@
-const { createUser, getAdminUser, getAdminUserById, updateUserAdmin, deleteAdminUser , uploadImages} = require("./adminUser.contorller");
-const router = require ("express").Router();
+const {
+    createUser,
+    getAdminUser,
+    getAdminUserById,
+    updateUserAdmin,
+    deleteAdminUser,
+    validateAdminUser,
+    addUpdateNews,
+    getNewsListController,
+    getChannelMenuListController
+} = require("./adminUser.contorller");
+const router = require("express").Router();
 
 
-const adminUsersCalling =()=>{
+const adminUsersCalling = () => {
     try {
         //METHODS FOR ADMIN USER =====>
-        router.post("/", createUser);
+        // router.post("/", createUser);
+        router.post("/validate_admin_user", validateAdminUser); //when user login
+        router.post("/addUpdateNews", addUpdateNews);
+        router.post("/getNewsList", getNewsListController);
+        router.post("/getChannelMenuList", getChannelMenuListController);
         router.get("/", getAdminUser);
         router.get("/:id", getAdminUserById);
         router.patch("/", updateUserAdmin);
