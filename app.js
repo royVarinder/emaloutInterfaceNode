@@ -6,6 +6,7 @@ const path = require("path");
 const userRouter = require("./api/api_adminUsers/adminUser.Router");
 const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
 const bussCategories = require("./api/api_bussCategories/bussCategories.Router");
+const _userRoutes = require("./api/api_users/users.Router")
 const cors = require("cors");
 
 const storage = multer.diskStorage({
@@ -15,16 +16,20 @@ const storage = multer.diskStorage({
     }
 })
 
+const APP_NODE_URL = process.env.APP_NODE_URL;
+
 const upload = multer({
     storage : storage
 })
 
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
+app.use("/profile", express.static('upload/videos'));
 app.use(cors());
 app.use("/api/api_adminUsers", userRouter);
 app.use("/api/api_bussness", userBussRouter);
 app.use("/api/api_bussCategories", bussCategories);
+app.use("/api/api_users", _userRoutes);
 
 //api for upload images files in 
 app.post("/uploadImages", upload.array('profile'), (req, res)=>{
@@ -37,7 +42,7 @@ app.post("/uploadImages", upload.array('profile'), (req, res)=>{
         res.json({
             success : true,
             bussImageURL : req.files.map((items)=>{
-                return  `http://localhost:8000/profile/${items.filename}`
+                return  `${APP_NODE_URL}/profile/${items.filename}`
             })
         })
     }

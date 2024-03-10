@@ -8,7 +8,8 @@ const {
     getChannelDetailsService,
     addUpdateNewsService,
     getNewsListService,
-    getChannelMenuListService
+    getChannelMenuListService,
+    getNewsDetailsService
 } = require("./adminUser.service");
 const { genSaltSync, hashSync } = require('bcrypt');
 module.exports = {
@@ -171,8 +172,23 @@ module.exports = {
         })
     },
     getChannelMenuListController: (req, res) => {
-        console.log('getChannelMenuListController :>> ');
         getChannelMenuListService(req.body, (err, result) => {
+            if (err) {
+                return res.json({
+                    success: 0,
+                    message: err,
+                    data: []
+                })
+            }
+            return res.json({
+                success: 1,
+                message: "Data fetched successfully",
+                data: result
+            })
+        })
+    },
+    getNewsDetailsController: (req, res) => {
+        getNewsDetailsService(req.body, (err, result) => {
             if (err) {
                 return res.json({
                     success: 0,

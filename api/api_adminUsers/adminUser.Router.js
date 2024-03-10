@@ -7,7 +7,8 @@ const {
     validateAdminUser,
     addUpdateNews,
     getNewsListController,
-    getChannelMenuListController
+    getChannelMenuListController,
+    getNewsDetailsController
 } = require("./adminUser.contorller");
 const router = require("express").Router();
 
@@ -17,6 +18,7 @@ const adminUsersCalling = () => {
         //METHODS FOR ADMIN USER =====>
         // router.post("/", createUser);
         router.post("/validate_admin_user", validateAdminUser); //when user login
+        router.post("/getNewsDetails", getNewsDetailsController); //when user login
         router.post("/addUpdateNews", addUpdateNews);
         router.post("/getNewsList", getNewsListController);
         router.post("/getChannelMenuList", getChannelMenuListController);

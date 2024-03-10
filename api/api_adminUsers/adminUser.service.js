@@ -1,6 +1,6 @@
 const { printCurrentTimeStamp } = require("../../Config/Util");
 const pool = require("../../Config/database");
-
+const axios = require('axios');
 module.exports = {
     //FUNCTIONS TO MANAGE THE ADMIN USERS SERVICES =====> 
     create: (data, callback) => {
@@ -99,6 +99,7 @@ module.exports = {
     addUpdateNewsService: (reqData, callback) => {
         const currentTimeStamp = printCurrentTimeStamp();
         const { newsId, channel_id, title, description, images, author_name } = reqData;
+        // return  
         if (!!newsId) {
             //update
             pool.query('UPDATE `emalout_news` SET `title` = ?, `description` = ?, `images` =?, `author_name` = ?, `status` = ?, `channel_id`=?, `updatedAt` = ? WHERE `id` = ?;',
@@ -125,9 +126,10 @@ module.exports = {
             )
         }
     },
+    // SELECT * FROM `emalout_news` ORDER BY `emalout_news`.`id`  DESC
     getNewsListService: (reqData, callback) => {
         const { channel_id } = reqData;
-        pool.query("SELECT * FROM emalout_news where channel_id = ? and `status` = ?;",
+        pool.query("SELECT * FROM emalout_news where channel_id = ? and `status` = ? ORDER BY `id` DESC;",
             [channel_id, '1'],
             (err, result, fields) => {
                 if (err) {
@@ -148,6 +150,19 @@ module.exports = {
                 }
                 return callback(null, result)
             })
+
+    },
+    getNewsDetailsService: (reqData, callback) => {
+        pool.query("SELECT * FROM `emalout_news` WHERE `id` = ? ",
+            [reqData?.newsId],
+            (err, result, fields) => {
+                if (err) {
+                    console.log('err :>> ', err?.sql);
+                    return callback(err?.sqlMessage)
+                }
+                return callback(null, result)
+            }
+        )
 
     }
 }
