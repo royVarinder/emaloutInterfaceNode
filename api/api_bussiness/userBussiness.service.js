@@ -79,6 +79,15 @@ module.exports = {
         return callback(null,result)
     })
     },
+    getNewsService:(reqData,callback)=>{
+        pool.query(`SELECT * FROM emalof2l_emalout.emalout_news`,[],(err,results,fields)=>{
+            if(err){
+                return callback(err);
+            }
+            console.log('results :>> ', results);
+            return callback(null,results)
+        })
+    },
 //     INSERT INTO `emalout`.`emalout_bussinesses`
 //             (`id`,
 //              `user_name`,

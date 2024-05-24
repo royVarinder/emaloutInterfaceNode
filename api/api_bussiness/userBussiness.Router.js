@@ -5,7 +5,8 @@ const {
     //    updateUserBussiness,
         // deleteBussinessById 
         addNewsController,
-        updateNewsByIdController
+        updateNewsByIdController,
+        getNewsController
     } = require("./userBussiness.contorller");
 const router = require ("express").Router();
 
@@ -18,6 +19,7 @@ const userBussinessesCalling =()=>{
         router.get("/:id", getUserBussinessById);
         router.post("/addNews", addNewsController);
         router.post("/addNews/:id", updateNewsByIdController);
+        router.post("/fetchAllNews", getNewsController);
         // router.patch("/", updateUserBussiness);
         // router.delete("/:id", deleteBussinessById);
     } catch (error) {

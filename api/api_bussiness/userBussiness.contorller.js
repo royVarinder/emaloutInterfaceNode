@@ -3,6 +3,7 @@ const {
      serviceGetBussinesses,
      addNewsService,
      updateNewsByIdService,
+     getNewsService,
     //   serviceDeleteBussiness,
     //    serviceUpdateBussiness,
         serviceGetBussinessById} = require("./userBussiness.service");
@@ -94,7 +95,23 @@ module.exports = {
                 message:"Data Update successfully."
             })
         })
-    }
+    },
+    getNewsController:(req,res)=>{
+
+        getNewsService(req.body,(err,results)=>{
+            if(err){
+                console.error('err :>> ', err);
+                return res.json({
+                    success:0,
+                    message:err.message,
+                })
+            }
+            return res.json({
+                success:1,
+                message:"Data fetch successfully."
+            })
+        })
+    },
     // updateUserBussiness : (req, res)=>{
     //     const body = req.body;
     //     const salt = genSaltSync(10);
