@@ -1,15 +1,16 @@
-require("dotenv").config();
-const express = require("express");
-const app = express();
-const multer = require("multer");
-const path = require("path");
-const userRouter = require("./api/api_adminUsers/adminUser.Router");
+require("dotenv").config();             //Environment Configuration (process.env= .env);
+
+const express = require("express");     //Dependencies and Middleware
+const app = express();                  //Web framework for Node.js.
+const multer = require("multer");       //Middleware for handling file uploads.
+const path = require("path");           //working with file and directory paths.
+const userRouter = require("./api/api_adminUsers/adminUser.Router"); //handling  API routes. 
 const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
 const bussCategories = require("./api/api_bussCategories/bussCategories.Router");
 const _userRoutes = require("./api/api_users/users.Router")
-const cors = require("cors");
+const cors = require("cors");           //Enable Cross-Origin Resource Sharing
 
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({    //Multer for File Storage
     destination : './upload/images',
     filename : (req,file, cb) =>{
         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)

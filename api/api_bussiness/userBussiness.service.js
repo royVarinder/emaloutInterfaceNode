@@ -27,6 +27,58 @@ module.exports = {
         }
         )
     },
+
+    addNewsService:(reqData,callback)=>{
+    console.log('reqData :>> ', reqData);
+    pool.query(`insert into emalout_news (title, description, author,facebook_link, insta_link, youtube_link, status, images, videos, channel_id, author_id, city_id)
+        values(?,?,?,?,?,?,?,?,?,?,?,?)`,
+         [
+            reqData.title,
+            reqData.description,
+            reqData.author,
+            reqData.facebook_link,
+            reqData.insta_link,
+            reqData.youtube_link,
+            reqData.status,
+            reqData.images,
+            reqData.videos,
+            reqData.channel_id,
+            reqData.author_id,
+            reqData.city_id
+        ],
+        (err, results, fields)=>{
+            if(err){
+                return callback(err);
+            }
+            return callback(null, results)
+        }
+        )
+    },
+    
+    updateNewsByIdService:(reqData,callback)=>{
+    console.log('reqData :>> ', reqData);
+    pool.query(`update emalout_news set title=?, description=?, author=?,facebook_link=?, insta_link=?, youtube_link=?, status=?, images=?, videos=?, channel_id=?, author_id=?, city_id=? where id=?`,[
+            reqData.title,
+            reqData.description,
+            reqData.author,
+            reqData.facebook_link,
+            reqData.insta_link,
+            reqData.youtube_link,
+            reqData.status,
+            reqData.images,
+            reqData.videos,
+            reqData.channel_id,
+            reqData.author_id,
+            reqData.city_id,
+            reqData.id
+    ],
+    (err,result,fields)=>{
+        if(err){
+            return callback(err);
+        }
+        return callback(null,result)
+    })
+    },
 //     INSERT INTO `emalout`.`emalout_bussinesses`
 //             (`id`,
 //              `user_name`,

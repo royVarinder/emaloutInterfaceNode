@@ -1,11 +1,9 @@
 const {
-    serviceCreateBussiness,
-     serviceGetBussinesses,
-     addNewsService,
-     updateNewsByIdService,
+    serviceCreateNews,
+     serviceGetNews,
     //   serviceDeleteBussiness,
     //    serviceUpdateBussiness,
-        serviceGetBussinessById} = require("./userBussiness.service");
+        serviceGetNewsById} = require("./news.service");
 const {genSaltSync, hashSync} = require('bcrypt');
 module.exports = {
     createUserBussiness : (req, res)=>{
@@ -57,44 +55,6 @@ module.exports = {
             
         })
     },
-
-    addNewsController : (req,res)=>{
-        // console.log('req.body :>> ', req.body);
-        // res.json({
-        //     success:1,
-        //     message:"Api res succes."
-        // })
-        addNewsService(req.body,(err,results)=>{
-             if(err){
-                console.error(err);
-                 return res.json({
-                success : 0,
-                message : err.message,
-            })
-            }
-            return res.json({
-                success : 1,
-                message : "Data insert successfully.",
-            })
-        });
-    },
-
-    updateNewsByIdController:(req,res)=>{
-
-        updateNewsByIdService(req.body,(err,results)=>{
-            if(err){
-                console.error(err);
-                return res.json({
-                    success:0,
-                    message:err.message,
-                })
-            }
-            return res.json({
-                success:1,
-                message:"Data Update successfully."
-            })
-        })
-    }
     // updateUserBussiness : (req, res)=>{
     //     const body = req.body;
     //     const salt = genSaltSync(10);
