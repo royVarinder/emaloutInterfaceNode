@@ -80,7 +80,12 @@ module.exports = {
     })
     },
     getNewsService:(reqData,callback)=>{
-        pool.query(`SELECT * FROM emalof2l_emalout.emalout_news`,[],(err,results,fields)=>{
+        let key='';
+        if(!!reqData){
+             key = Object.keys(reqData);
+        }
+        console.log('key :>> ', key);
+        pool.query(`${!!reqData[key] && reqData[key]!==''?`SELECT * FROM emalout_news where ${key}=?`:'SELECT * FROM emalout_news'}`,[reqData[key]],(err,results,fields)=>{
             if(err){
                 return callback(err);
             }
