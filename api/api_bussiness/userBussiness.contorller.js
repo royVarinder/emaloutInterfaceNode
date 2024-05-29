@@ -4,6 +4,7 @@ const {
      addNewsService,
      updateNewsByIdService,
      getNewsService,
+     deleteNewsByIdService,
     //   serviceDeleteBussiness,
     //    serviceUpdateBussiness,
         serviceGetBussinessById} = require("./userBussiness.service");
@@ -60,7 +61,7 @@ module.exports = {
     },
 
     addNewsController : (req,res)=>{
-        // console.log('req.body :>> ', req.body);
+        console.log('req.body :>> ', req.body);
         // res.json({
         //     success:1,
         //     message:"Api res succes."
@@ -111,6 +112,22 @@ module.exports = {
                 message:"Data fetch successfully."
             })
         })
+    },
+    deleteNewsByIdController:(req,res)=>{
+        deleteNewsByIdService(req.body,(err,results)=>{
+            if(err){
+                console.log('err :>> ', err);
+                return res.json({
+                    success:0,
+                    message:err.message
+                })
+            }
+            return res.json({
+                success:1,
+                message:"Data deleted successfully."
+            })
+        })
+
     },
     // updateUserBussiness : (req, res)=>{
     //     const body = req.body;

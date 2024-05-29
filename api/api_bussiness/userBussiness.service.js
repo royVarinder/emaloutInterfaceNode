@@ -93,6 +93,18 @@ module.exports = {
             return callback(null,results)
         })
     },
+     deleteNewsByIdService:(reqData,callback)=>{
+        console.log('reqData :>> ', reqData);
+        const id=reqData?.id;
+        pool.query(`delete from emalout_news where id = ?`,[id],(err,result,fields)=>{
+            if(err){
+                return  callback(err);
+            }
+            console.log('result :>> ', result);
+            return  callback(null,result)
+        })
+     },
+
 //     INSERT INTO `emalout`.`emalout_bussinesses`
 //             (`id`,
 //              `user_name`,
