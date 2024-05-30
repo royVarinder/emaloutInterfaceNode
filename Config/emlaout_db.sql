@@ -120,7 +120,7 @@ CREATE TABLE `emalout_news` (
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +129,7 @@ CREATE TABLE `emalout_news` (
 
 LOCK TABLES `emalout_news` WRITE;
 /*!40000 ALTER TABLE `emalout_news` DISABLE KEYS */;
-INSERT INTO `emalout_news` VALUES (1,'title_2','description_2','author_2','facebook_link_2','insta_link_2','youtube_link_2','1','images_2','videos_2','channel_id_2','author_id_2','city_id_2',NULL,'2024-05-23 22:22:01'),(2,'title_1','description_1','author_1','facebook_link_1','insta_link_1','youtube_link_1','0','images_1','videos_1','channel_id_1','author_id_1','city_id_1','2024-05-22 22:42:46','2024-05-22 22:42:46');
+INSERT INTO `emalout_news` VALUES (1,'title_3','description_3','author_3','facebook_link_3','insta_link_3','youtube_link_3','1','images_3','videos_3','channel_id_3','author_id_3','city_id_3',NULL,'2024-05-29 21:05:20'),(3,'update_title','description_4','author_4','facebook_link_4','insta_link_4','youtube_link_4','0','images_4','videos_4','channel_id_4','author_id_4','city_id_4','2024-05-29 21:11:56','2024-05-30 21:27:37'),(4,'title_5','description_5','author_5','facebook_link_5','insta_link_5','youtube_link_5','0','images_5','videos_5','channel_id_5','author_id_5','city_id_5','2024-05-29 22:00:27','2024-05-29 22:00:27'),(5,'title_6','description_6','author_6','facebook_link_6','insta_link_6','youtube_link_6','1','images_6','videos_6','channel_id_6','author_id_6','city_id_6','2024-05-29 22:01:52','2024-05-29 22:01:52'),(6,'title_7','description_7','author_7','facebook_link_7','insta_link_7','youtube_link_7','1','images_7','videos_7','channel_id_7','author_id_7','city_id_7','2024-05-29 22:06:21','2024-05-29 22:06:21'),(7,'title_8','description_8','author_8','facebook_link_8','insta_link_8','youtube_link_8','1','images_8','videos_8','channel_id_8','author_id_8','city_id_8','2024-05-29 22:07:09','2024-05-29 22:07:09');
 /*!40000 ALTER TABLE `emalout_news` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -142,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-24 21:06:38
+-- Dump completed on 2024-05-30 21:39:59
