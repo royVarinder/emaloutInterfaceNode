@@ -104,6 +104,55 @@ module.exports = {
             return  callback(null,result)
         })
      },
+     updateNewsAnyKayByIdService:(reqData,callback)=>{
+        console.log('reqData :>> ', reqData);
+        let key='';
+        let value='';
+        if(!!reqData){
+            key = Object.keys(reqData);
+            value=Object.values(reqData);
+        }
+        let updateColumn = [];
+
+        if (key.includes('title')) updateColumn.push(`title = ?`);
+        if (key.includes('description')) updateColumn.push(`description = ?`);
+        if (key.includes('author')) updateColumn.push(`author = ?`);
+        if (key.includes('facebook_link')) updateColumn.push(`facebook_link = ?`);
+        if (key.includes('insta_link')) updateColumn.push(`insta_link = ?`);
+        if (key.includes('youtube_link')) updateColumn.push(`youtube_link = ?`);
+        if (key.includes('status')) updateColumn.push(`status = ?`);
+        if (key.includes('images')) updateColumn.push(`images = ?`);
+        if (key.includes('videos')) updateColumn.push(`videos = ?`);
+        if (key.includes('channel_id')) updateColumn.push(`channel_id = ?`);
+        if (key.includes('author_id')) updateColumn.push(`author_id = ?`);
+        if (key.includes('city_id')) updateColumn.push(`city_id = ?`);
+
+        let updateColumnString = updateColumn.join(', ');
+
+        let updateColumnValue = [];
+        if (key.includes('title')) updateColumnValue.push(reqData['title']);
+        if (key.includes('description')) updateColumnValue.push(reqData['description']);
+        if (key.includes('author')) updateColumnValue.push(reqData['author']);
+        if (key.includes('facebook_link')) updateColumnValue.push(reqData['facebook_link']);
+        if (key.includes('insta_link')) updateColumnValue.push(reqData['insta_link']);
+        if (key.includes('youtube_link')) updateColumnValue.push(reqData['youtube_link']);
+        if (key.includes('status')) updateColumnValue.push(reqData['status']);
+        if (key.includes('images')) updateColumnValue.push(reqData['images']);
+        if (key.includes('videos')) updateColumnValue.push(reqData['videos']);
+        if (key.includes('channel_id')) updateColumnValue.push(reqData['channel_id']);
+        if (key.includes('author_id')) updateColumnValue.push(reqData['author_id']);
+        if (key.includes('city_id')) updateColumnValue.push(reqData['city_id']);
+        updateColumnValue.push(reqData['id']); 
+
+        const query = `UPDATE emalout_news SET ${updateColumnString} WHERE id = ?`;
+        
+        pool.query(query,updateColumnValue,(err,result,fields)=>{
+        if(err){
+            return callback(err);
+        }
+        return callback(null,result)
+        })
+     },
 
 //     INSERT INTO `emalout`.`emalout_bussinesses`
 //             (`id`,

@@ -5,6 +5,7 @@ const {
      updateNewsByIdService,
      getNewsService,
      deleteNewsByIdService,
+     updateNewsAnyKayByIdService,
     //   serviceDeleteBussiness,
     //    serviceUpdateBussiness,
         serviceGetBussinessById} = require("./userBussiness.service");
@@ -129,6 +130,22 @@ module.exports = {
         })
 
     },
+    updateNewsAnyKayByIdController:(req,res)=>{
+        updateNewsAnyKayByIdService(req.body,(err,result)=>{
+            if(err){
+                return res.json({
+                    success:0,
+                    message:err.message
+                })
+            }
+            return res.json({
+                success:1,
+                message:"Data update for specific key with ID."
+            })
+        })
+
+    },
+
     // updateUserBussiness : (req, res)=>{
     //     const body = req.body;
     //     const salt = genSaltSync(10);
