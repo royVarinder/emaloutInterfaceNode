@@ -9,7 +9,7 @@ const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
 const bussCategories = require("./api/api_bussCategories/bussCategories.Router");
 const _userRoutes = require("./api/api_users/users.Router")
 const cors = require("cors");           //Enable Cross-Origin Resource Sharing
-
+const sequelize = require('./models/index');
 const storage = multer.diskStorage({    //Multer for File Storage
     destination : './upload/images',
     filename : (req,file, cb) =>{
@@ -22,7 +22,7 @@ const APP_NODE_URL = process.env.APP_NODE_URL;
 const upload = multer({
     storage : storage
 })
-
+// sequelize.sync({alter : true})
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
 app.use("/profile", express.static('upload/videos'));
