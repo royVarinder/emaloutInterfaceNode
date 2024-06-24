@@ -5,10 +5,12 @@ const {
     //    updateUserBussiness,
         // deleteBussinessById 
         addNewsController,
+        updateNewsController,
         updateNewsByIdController,
         getNewsController,
         deleteNewsByIdController,
         updateNewsAnyKayByIdController,
+        fetchAllNewsController, 
     } = require("./userBussiness.contorller");
 const router = require ("express").Router();
 
@@ -20,6 +22,8 @@ const userBussinessesCalling =()=>{
         router.get("/", getUserBussiness);
         router.get("/:id", getUserBussinessById);
         router.post("/addNews", addNewsController);
+        router.post("/updateNews", updateNewsController);
+        router.post("/fetchAllNews", fetchAllNewsController);
         router.post("/addNews/:id", updateNewsByIdController);
         router.post("/fetchAllNews", getNewsController);
         router.post("/deleteNews/:id", deleteNewsByIdController);

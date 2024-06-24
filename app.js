@@ -9,20 +9,18 @@ const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
 const bussCategories = require("./api/api_bussCategories/bussCategories.Router");
 const _userRoutes = require("./api/api_users/users.Router")
 const cors = require("cors");           //Enable Cross-Origin Resource Sharing
-const sequelize = require('./models/index');
+const {sequelize} = require('./models/index');
 const storage = multer.diskStorage({    //Multer for File Storage
     destination : './upload/images',
     filename : (req,file, cb) =>{
         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
     }
 })
-
 const APP_NODE_URL = process.env.APP_NODE_URL;
 
 const upload = multer({
     storage : storage
 })
-// sequelize.sync({alter : true})
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
 app.use("/profile", express.static('upload/videos'));
@@ -49,6 +47,9 @@ app.post("/uploadImages", upload.array('profile'), (req, res)=>{
     }
 })
 
+sequelize.sync()
+
+// Sync all defined models to the DB
 app.listen(process.env.APP_PORT, ()=>{
     console.log('Your app is running on port:',process.env.APP_PORT);
 });
