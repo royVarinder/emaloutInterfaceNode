@@ -47,7 +47,7 @@ app.post("/uploadImages", upload.array('profile'), (req, res)=>{
     }
 })
 
-sequelize.sync()
+// sequelize.sync()
 
 // Sync all defined models to the DB
 app.listen(process.env.APP_PORT, ()=>{
