@@ -25,11 +25,7 @@ module.exports = (sequelize, DataTypes) => {
              status: {
                 type:DataTypes.STRING,
                 defaultValue:'1'
-            } ,
-             status_test: {
-                type:DataTypes.STRING,
-                defaultValue:'1'
-            } 
+            }
         },
         {
             sequelize,
@@ -37,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    adminUser.sync();
+    // adminUser.sync();
     // adminUser.sync({ alter: true });
     return adminUser;
 };

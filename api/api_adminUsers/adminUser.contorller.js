@@ -12,29 +12,33 @@ const {
     getNewsDetailsService
 } = require("./adminUser.service");
 const { genSaltSync, hashSync } = require('bcrypt');
-const newsTable = require('./../../models').em_ad_users;
-console.log('newsTable :>> ', newsTable);
+const adminUserTable = require('./../../models').em_ad_users;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
     createUser: async (req, res) => {
-         req.body['uuid'] = uuidv4();
-         console.log('req.body :>> ', req.body);
-        // const body = req.body;
-        // const salt = genSaltSync(10);
-        // body.admin_password = hashSync(body.admin_password, salt);
-        // create(body, (err, results) => {
-        //     if (err) {
-        //         console.error(err);
-        //         return res.status(500).json({
-        //             success: 0,
-        //             message: "Database connection error!"
-        //         })
-        //     }
-        //     return res.status(200).json({
-        //         success: 1,
-        //         message: results
-        //     })
-        // })
+        try {
+            req.body['uuid'] = uuidv4();
+            const createdAdminUser = await adminUserTable.create(req.body);
+            if (!!createdAdminUser) {
+                return res.json({
+                    success: true,
+                    message: "Admin user created successfully!",
+                    data: [],
+                })
+            }
+            return res.json({
+                success: false,
+                message: "Failed to create admin user!",
+                data: [],
+            })
+        } catch (error) {
+            console.error(error);
+            return res.json({
+                success: false,
+                message: error?.message,
+                data: [],
+            })
+        }
     },
     getAdminUserById: (req, res) => {
         const adminId = req.params.id;
