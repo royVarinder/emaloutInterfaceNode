@@ -12,11 +12,14 @@ const {
     getNewsDetailsService
 } = require("./adminUser.service");
 const { genSaltSync, hashSync } = require('bcrypt');
+const md5 = require("md5");
 const adminUserTable = require('./../../models').em_ad_users;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
     createUser: async (req, res) => {
         try {
+            const { admin_password } = req.body;
+            req.body.admin_password = md5(admin_password);
             req.body['uuid'] = uuidv4();
             const createdAdminUser = await adminUserTable.create(req.body);
             if (!!createdAdminUser) {
