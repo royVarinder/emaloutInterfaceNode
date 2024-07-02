@@ -15,6 +15,7 @@ const { genSaltSync, hashSync } = require('bcrypt');
 const md5 = require("md5");
 const adminUserTable = require('./../../models').em_ad_users;
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
 module.exports = {
     createUser: async (req, res) => {
         try {
@@ -129,39 +130,31 @@ module.exports = {
             })
         })
     },
-    validateAdminUser: (req, res) => {
-        validateAdminUserService(req?.body, (err, adminResult) => {
-            if (err) {
-                console.error(err);
-                return
-            }
-            if (adminResult.length === 0) {
-                return res.json({
-                    success: 0,
-                    message: "Invalid Credentials!",
-                    data: [],
-                    channel: undefined
-                })
-            }
-            const adminId = adminResult[0]?.id;
-            getChannelDetailsService(adminId, (err, channelResult) => {
-                let _channelDetail = channelResult[0] || null;
-                if (_channelDetail) {
-                    _channelDetail['channel_id'] = _channelDetail?.id
-                }
-                if (err) {
-                    console.error(err.message);
-                    return
-                }
-                return res.json({
-                    success: 1,
-                    message: "Admin user logged in successfully",
-                    data: adminResult,
-                    channel: channelResult,
-                })
-            })
+    validateAdminUser: async (req, res) => {
+         const { admin_username, admin_password } = req.body;
 
-        })
+         try {
+            req.body.admin_password = md5(admin_password);
+            const md5Password =md5(admin_password);
+            const admin = await adminUserTable.findOne({ where: { admin_username,admin_password: md5Password  } });
+        if (!admin) {
+            return res.json({
+                success: 0,
+                message: "Authentication failed. User not found.",
+            });
+        }
+        return res.json({
+            success: 1,
+            message: "Authentication successful.",
+        });
+
+    } catch (error) {
+        console.error('Authentication error :>> ', error);
+        return res.json({
+            success: 0,
+            message: error.message,
+        });
+    }
     },
     addUpdateNews: (req, res) => {
         addUpdateNewsService(req.body, (err, result) => {
