@@ -23,7 +23,7 @@ const adminUsersCalling = () => {
         router.post("/getNewsList", getNewsListController);
         router.post("/getChannelMenuList", getChannelMenuListController);
         router.get("/", getAdminUser);
-        router.get("/:id", getAdminUserById);
+        router.post("/:id", getAdminUserById);
         router.patch("/", updateUserAdmin);
         router.delete("/:id", deleteAdminUser);
     } catch (error) {

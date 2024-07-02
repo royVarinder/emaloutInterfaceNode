@@ -43,24 +43,36 @@ module.exports = {
             })
         }
     },
-    getAdminUserById: (req, res) => {
-        const adminId = req.params.id;
-        getAdminUserById(adminId, (err, results) => {
-            if (err) {
-                console.error(err);
-                return
-            }
-            if (results.length === 0) {
-                return res.json({
-                    success: 0,
-                    message: "Record not found!"
-                })
-            }
+    getAdminUserById:async (req, res) => {
+        try {
+        console.log('req.body :>> ', req.body);
+        const { uuid } = req.body;
+
+        if (!uuid) {
             return res.json({
-                success: 1,
-                message: results,
-            })
-        })
+                success: 0,
+                message: "UUID is required",
+            });
+        }
+        const existingData = await adminUserTable.findOne({ where: { uuid } });
+        if (!existingData) {
+            return res.json({
+                success: 0,
+                message: "No data found with the given UUID",
+            });
+        }
+        return res.json({
+            success: 1,
+            data: existingData,
+        });
+
+    } catch (error) {
+        console.error('error :>> ', error);
+        return res.json({
+            success: 0,
+            message: error.message,
+        });
+    }
     },
     getAdminUser: (req, res) => {
         getAdminUser((err, results) => {
