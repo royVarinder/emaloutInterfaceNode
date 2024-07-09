@@ -5,6 +5,9 @@ const {
     //    serviceUpdateBussiness,
         serviceGetNewsById} = require("./news.service");
 const {genSaltSync, hashSync} = require('bcrypt');
+const newsTable = require('./../../models').em_news;
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = {
     createUserBussiness : (req, res)=>{
         const body = req.body;
@@ -22,6 +25,37 @@ module.exports = {
                 message : results
             })  
         })
+    },
+      addNews: async (req, res) => {
+        try {
+            req.body['uuid'] = uuidv4();
+            console.log('createdData :>> ',);
+            const createdRow = await newsTable.create(req.body);
+            console.log('createdRow :>> ', createdRow);
+            if (!!createdRow) {
+                return res.json(
+                    {
+                        success: 1,
+                        message: "News added successfully.",
+                    }
+                )
+            }
+            return res.json(
+                {
+                    success: 0,
+                    message: "Something went wrong!",
+                }
+            )
+
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 1,
+                    message: error.message,
+                }
+            )
+        }
     },
     getUserBussinessById : (req, res)=>{
         const bussId = req.params.id;

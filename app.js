@@ -16,6 +16,8 @@ const storage = multer.diskStorage({    //Multer for File Storage
         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
     }
 })
+const _newsRoutes = require("./api/api_news/news.Router");
+
 const APP_NODE_URL = process.env.APP_NODE_URL;
 
 const upload = multer({
@@ -29,6 +31,7 @@ app.use("/api/api_adminUsers", userRouter);
 app.use("/api/api_bussness", userBussRouter);
 app.use("/api/api_bussCategories", bussCategories);
 app.use("/api/api_users", _userRoutes);
+app.use("/api/api_news", _newsRoutes);
 
 //api for upload images files in 
 app.post("/uploadImages", upload.array('profile'), (req, res)=>{
