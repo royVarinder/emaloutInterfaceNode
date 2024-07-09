@@ -26,37 +26,6 @@ module.exports = {
             })  
         })
     },
-      addNews: async (req, res) => {
-        try {
-            req.body['uuid'] = uuidv4();
-            console.log('createdData :>> ',);
-            const createdRow = await newsTable.create(req.body);
-            console.log('createdRow :>> ', createdRow);
-            if (!!createdRow) {
-                return res.json(
-                    {
-                        success: 1,
-                        message: "News added successfully.",
-                    }
-                )
-            }
-            return res.json(
-                {
-                    success: 0,
-                    message: "Something went wrong!",
-                }
-            )
-
-        } catch (error) {
-            console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
-        }
-    },
     getUserBussinessById : (req, res)=>{
         const bussId = req.params.id;
         serviceGetBussinessById(bussId, (err, results)=>{
@@ -131,4 +100,106 @@ module.exports = {
     //         })
     //     })
     // },
+    addNews: async (req, res) => {
+        try {
+            req.body['uuid'] = uuidv4();
+            console.log('createdData :>> ',);
+            const createdRow = await newsTable.create(req.body);
+            console.log('createdRow :>> ', createdRow);
+            if (!!createdRow) {
+                return res.json(
+                    {
+                        success: 1,
+                        message: "News added successfully.",
+                    }
+                )
+            }
+            return res.json(
+                {
+                    success: 0,
+                    message: "Something went wrong!",
+                }
+            )
+
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 1,
+                    message: error.message,
+                }
+            )
+        }
+    },
+     updateNews: async (req, res) => {
+      try {
+            console.log('req.body :>> ', req.body);
+            const { uuid } = req.body;
+            if (!!uuid) {
+                const updatedRo = await newsTable.update( req.body, {
+                    where: {
+                        uuid,
+                    }
+                });
+                if (updatedRo > 0) {
+                    return res.json(
+                        {
+                            success: 1,
+                            message: "News updated",
+                        }
+                    )
+                }
+                return res.json(
+                    {
+                        success: 0,
+                        message: "Something went wrong!",
+                    }
+                )
+            }
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 0,
+                    message: error.message,
+                }
+            )
+        }
+    },
+
+   getNewsByUuid : async (req, res) => {
+    try {
+        console.log('req.body :>> ', req.body);
+        const { uuid } = req.body;
+        
+        if (!uuid) {
+            return res.json({
+                success: 0,
+                message: "UUID is required.",
+            });
+        }
+
+        const findNews = await newsTable.findOne({ where: { uuid } });
+        
+        if (findNews) {
+            return res.json({
+                success: 1,
+                message: findNews,
+            });
+        }
+
+        return res.json({
+            success: 0,
+            message: "News not found!",
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.json({
+            success: 0,
+            message: error.message,
+        });
+    }
+},
+
 }
