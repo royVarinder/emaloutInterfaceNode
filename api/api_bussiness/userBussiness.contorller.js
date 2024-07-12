@@ -11,24 +11,70 @@ const {
     serviceGetBussinessById } = require("./userBussiness.service");
 const { genSaltSync, hashSync } = require('bcrypt');
 const newsTable = require('./../../models').em_users;
+const bussinessTable = require('./../../models').em_bussiness;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
-    createUserBussiness: (req, res) => {
-        const body = req.body;
-        const salt = genSaltSync(10);
-        serviceCreateBussiness(body, (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({
-                    success: false,
-                    message: "Database connection error!"
-                })
-            }
-            return res.status(200).json({
-                success: true,
-                message: results
-            })
-        })
+    createUserBussiness:async (req, res) => {
+        // const body = req.body;
+        // const salt = genSaltSync(10);
+        // serviceCreateBussiness(body, (err, results) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return res.status(500).json({
+        //             success: false,
+        //             message: "Database connection error!"
+        //         })
+        //     }
+        //     return res.status(200).json({
+        //         success: true,
+        //         message: results
+        //     })
+        // })
+        try {
+            const { uuid } = req.body;
+                console.log('uuid :>> ', uuid);
+             if(!!uuid){
+                  const updatedRo = await bussinessTable.update(req.body, {
+                      where: {
+                          uuid,
+                        }
+                    });
+                if (updatedRo > 0) {
+                    return res.json(
+                        {
+                            success: 1,
+                            message: "Bussiness updated",
+                        }
+                    )
+                }
+             }else{
+                 req.body['uuid'] = uuidv4();
+                 const createdRow = await bussinessTable.create(req.body);
+                 if (!!createdRow) {
+                     return res.json(
+                         {
+                             success: 1,
+                             message: "Bussiness Added.",
+                         }
+                     )
+                 }
+             }
+            return res.json(
+                {
+                    success: 0,
+                    message: "Something went wrong!",
+                }
+            )
+
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 1,
+                    message: error.message,
+                }
+            )
+        }
     },
     getUserBussinessById: (req, res) => {
         const bussId = req.params.id;
