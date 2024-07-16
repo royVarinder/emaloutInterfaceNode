@@ -19,7 +19,8 @@ const userBussinessesCalling =()=>{
     try {
         //METHODS FOR ADMIN USER =====>
         router.post("/", createUserBussiness);
-        router.get("/", getUserBussiness);
+        // router.get("/", getUserBussiness);
+        router.post("/featchBussiness", getUserBussiness);
         router.get("/:id", getUserBussinessById);
         router.post("/addNews", addNewsController);
         router.post("/updateNews", updateNewsController);

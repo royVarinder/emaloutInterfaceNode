@@ -95,18 +95,66 @@ module.exports = {
             })
         })
     },
-    getUserBussiness: (req, res) => {
-        serviceGetBussinesses((err, results) => {
-            if (err) {
-                console.error(err);
-                return
-            }
-            return res.json({
-                success: 1,
-                message: results,
-            })
+    getUserBussiness: async(req, res) => {
+        // serviceGetBussinesses((err, results) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return
+        //     }
+        //     return res.json({
+        //         success: 1,
+        //         message: results,
+        //     })
 
-        })
+        // })
+
+
+         try {
+            console.log('req :>> ', req.body);
+            const { uuid, id } = req.body;
+                if (!!uuid) {
+                    const bussinessData = await bussinessTable.findAll({
+                        where: { uuid }
+                    })
+                    return res.json(
+                        {
+                            success: 1,
+                            message: "Bussiness fetched successfully!",
+                            data: bussinessData
+                        }
+                    )
+                }
+                if (!!id) {
+                    const bussinessData = await bussinessTable.findAll({
+                        where: { id }
+                    })
+                    return res.json(
+                        {
+                            success: 1,
+                            message: "Bussiness fetched successfully!",
+                            data: bussinessData
+                        }
+                    )
+                }
+                const bussinessData = await bussinessTable.findAll();
+                console.log('bussinessData :>> ', bussinessData);
+                return res.json(
+                    {
+                        success: 1,
+                        message: "All Bussiness fetched successfully!",
+                        data: bussinessData
+                    }
+                )
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 1,
+                    message: error.message,
+                }
+            )
+        }
+
     },
 
     addNewsController: async (req, res) => {
