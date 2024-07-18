@@ -22,9 +22,9 @@ const userBussinessesCalling =()=>{
         // router.get("/", getUserBussiness);
         router.post("/featchBussiness", getUserBussiness);
         router.get("/:id", getUserBussinessById);
-        router.post("/addNews", addNewsController);
-        router.post("/updateNews", updateNewsController);
-        router.post("/fetchAllNews", fetchAllNewsController);
+        // router.post("/addNews", addNewsController);
+        // router.post("/updateNews", updateNewsController);
+        // router.post("/fetchAllNews", fetchAllNewsController);
         router.post("/addNews/:id", updateNewsByIdController);
         router.post("/fetchAllNews", getNewsController);
         router.post("/deleteNews/:id", deleteNewsByIdController);
