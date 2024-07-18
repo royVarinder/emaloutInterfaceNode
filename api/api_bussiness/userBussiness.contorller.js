@@ -10,26 +10,12 @@ const {
     //    serviceUpdateBussiness,
     serviceGetBussinessById } = require("./userBussiness.service");
 const { genSaltSync, hashSync } = require('bcrypt');
-const newsTable = require('./../../models').em_users;
+// const newsTable = require('./../../models').em_users;
+const emUserTable = require('./../../models').em_user;
 const bussinessTable = require('./../../models').em_bussiness;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
     createUserBussiness:async (req, res) => {
-        // const body = req.body;
-        // const salt = genSaltSync(10);
-        // serviceCreateBussiness(body, (err, results) => {
-        //     if (err) {
-        //         console.error(err);
-        //         return res.status(500).json({
-        //             success: false,
-        //             message: "Database connection error!"
-        //         })
-        //     }
-        //     return res.status(200).json({
-        //         success: true,
-        //         message: results
-        //     })
-        // })
         try {
             const { uuid } = req.body;
                 console.log('uuid :>> ', uuid);
@@ -50,6 +36,19 @@ module.exports = {
              }else{
                  req.body['uuid'] = uuidv4();
                  const createdRow = await bussinessTable.create(req.body);
+                 const business_data =createdRow?.dataValues;
+                console.log('req.body :>> ', req.body);
+                console.log('business_data :>> ', business_data);
+                let em_user_req_body={
+                    "name":"",
+                    "contact":"",
+                    "email":"",
+                    "city":"",
+                    "district":"",
+                    "status":"",
+                }
+                // const em_user_createdRow = await emUserTable.create(req.body);
+
                  if (!!createdRow) {
                      return res.json(
                          {
@@ -70,7 +69,7 @@ module.exports = {
             console.error(error);
             return res.json(
                 {
-                    success: 1,
+                    success: 0,
                     message: error.message,
                 }
             )
@@ -157,36 +156,36 @@ module.exports = {
 
     },
 
-    addNewsController: async (req, res) => {
-        try {
-            req.body['uuid'] = uuidv4();
-            console.log('createdData :>> ',);
-            const createdRow = await newsTable.create(req.body);
-            console.log('createdRow :>> ', createdRow);
-            if (!!createdRow) {
-                return res.json(
-                    {
-                        success: 1,
-                        message: "Data has been inserted",
-                    }
-                )
-            }
-            return res.json(
-                {
-                    success: 0,
-                    message: "Something went wrong!",
-                }
-            )
+    // addNewsController: async (req, res) => {
+    //     try {
+    //         req.body['uuid'] = uuidv4();
+    //         console.log('createdData :>> ',);
+    //         const createdRow = await newsTable.create(req.body);
+    //         console.log('createdRow :>> ', createdRow);
+    //         if (!!createdRow) {
+    //             return res.json(
+    //                 {
+    //                     success: 1,
+    //                     message: "Data has been inserted",
+    //                 }
+    //             )
+    //         }
+    //         return res.json(
+    //             {
+    //                 success: 0,
+    //                 message: "Something went wrong!",
+    //             }
+    //         )
 
-        } catch (error) {
-            console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
-        }
+    //     } catch (error) {
+    //         console.error(error);
+    //         return res.json(
+    //             {
+    //                 success: 1,
+    //                 message: error.message,
+    //             }
+    //         )
+    //     }
         // console.log('req.body :>> ', req.body);
         // // res.json({
         // //     success:1,
@@ -205,95 +204,95 @@ module.exports = {
         //         message : "Data insert successfully.",
         //     })
         // });
-    },
-    updateNewsController: async (req, res) => {
-        try {
-            console.log('req.body :>> ', req.body);
-            const { uuid, bus_email } = req.body;
-            if (!!uuid) {
-                const updatedRo = await newsTable.update({ bus_email }, {
-                    where: {
-                        uuid,
-                    }
-                });
-                if (updatedRo > 0) {
-                    return res.json(
-                        {
-                            success: 0,
-                            message: "Data has been updated",
-                        }
-                    )
-                }
-                return res.json(
-                    {
-                        success: 0,
-                        message: "Something went wrong!",
-                    }
-                )
+    // },
+    // updateNewsController: async (req, res) => {
+    //     try {
+    //         console.log('req.body :>> ', req.body);
+    //         const { uuid, bus_email } = req.body;
+    //         if (!!uuid) {
+    //             const updatedRo = await newsTable.update({ bus_email }, {
+    //                 where: {
+    //                     uuid,
+    //                 }
+    //             });
+    //             if (updatedRo > 0) {
+    //                 return res.json(
+    //                     {
+    //                         success: 0,
+    //                         message: "Data has been updated",
+    //                     }
+    //                 )
+    //             }
+    //             return res.json(
+    //                 {
+    //                     success: 0,
+    //                     message: "Something went wrong!",
+    //                 }
+    //             )
 
 
-            }
+    //         }
 
-        } catch (error) {
-            console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
-        }
-    },
+    //     } catch (error) {
+    //         console.error(error);
+    //         return res.json(
+    //             {
+    //                 success: 1,
+    //                 message: error.message,
+    //             }
+    //         )
+    //     }
+    // },
 
 
-    fetchAllNewsController: async (req, res) => {
-        try {
-            console.log('req :>> ', req.body);
-            const { uuid, id } = req.body;
-            if (!!uuid) {
-                const newsData = await newsTable.findAll({
-                    where: { uuid },
-                    attributes: ['first_name', 'last_name']
+    // fetchAllNewsController: async (req, res) => {
+    //     try {
+    //         console.log('req :>> ', req.body);
+    //         const { uuid, id } = req.body;
+    //         if (!!uuid) {
+    //             const newsData = await newsTable.findAll({
+    //                 where: { uuid },
+    //                 attributes: ['first_name', 'last_name']
 
-                })
-                return res.json(
-                    {
-                        success: 1,
-                        message: "Data fetched successfully!",
-                        data: newsData
-                    }
-                )
-            }
-            if (!!id) {
-                const newsData = await newsTable.findAll({
-                    where: { id }
-                })
-                return res.json(
-                    {
-                        success: 1,
-                        message: "Data fetched successfully!",
-                        data: newsData
-                    }
-                )
-            }
-            const newsData = await newsTable.findAll();
-            return res.json(
-                {
-                    success: 1,
-                    message: "Data fetched successfully!",
-                    data: newsData
-                }
-            )
-        } catch (error) {
-            console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
-        }
-    },
+    //             })
+    //             return res.json(
+    //                 {
+    //                     success: 1,
+    //                     message: "Data fetched successfully!",
+    //                     data: newsData
+    //                 }
+    //             )
+    //         }
+    //         if (!!id) {
+    //             const newsData = await newsTable.findAll({
+    //                 where: { id }
+    //             })
+    //             return res.json(
+    //                 {
+    //                     success: 1,
+    //                     message: "Data fetched successfully!",
+    //                     data: newsData
+    //                 }
+    //             )
+    //         }
+    //         const newsData = await newsTable.findAll();
+    //         return res.json(
+    //             {
+    //                 success: 1,
+    //                 message: "Data fetched successfully!",
+    //                 data: newsData
+    //             }
+    //         )
+    //     } catch (error) {
+    //         console.error(error);
+    //         return res.json(
+    //             {
+    //                 success: 1,
+    //                 message: error.message,
+    //             }
+    //         )
+    //     }
+    // },
 
 
 
