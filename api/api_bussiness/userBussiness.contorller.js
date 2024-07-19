@@ -11,7 +11,7 @@ const {
     serviceGetBussinessById } = require("./userBussiness.service");
 const { genSaltSync, hashSync } = require('bcrypt');
 // const newsTable = require('./../../models').em_users;
-const emUserTable = require('./../../models').em_user;
+const emUserTable = require('./../../models').em_users;
 const bussinessTable = require('./../../models').em_bussiness;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
@@ -36,26 +36,37 @@ module.exports = {
              }else{
                  req.body['uuid'] = uuidv4();
                  const createdRow = await bussinessTable.create(req.body);
-                 const business_data =createdRow?.dataValues;
-                console.log('req.body :>> ', req.body);
-                console.log('business_data :>> ', business_data);
+                 const business_user_data =createdRow?.dataValues;
+                business_user_data['uuid_new'] = uuidv4();
                 let em_user_req_body={
-                    "name":"",
-                    "contact":"",
-                    "email":"",
-                    "city":"",
-                    "district":"",
-                    "status":"",
+                    "uuid":business_user_data?.uuid_new,
+                    "name":business_user_data?.user_name,
+                    "user_business_uuid":business_user_data?.uuid,
+                    "user_business_id":business_user_data?.id.toString(),
+                    "contact":business_user_data?.user_contact,
+                    "email":business_user_data?.user_email,
+                    "city":business_user_data?.buss_city,
+                    "district":business_user_data?.buss_district
                 }
-                // const em_user_createdRow = await emUserTable.create(req.body);
+                const em_user_createdRow = await emUserTable.create(em_user_req_body);
 
                  if (!!createdRow) {
-                     return res.json(
-                         {
-                             success: 1,
-                             message: "Bussiness Added.",
-                         }
-                     )
+
+                    if (!!em_user_createdRow){
+                        return res.json(
+                            {
+                                success: 1,
+                                message: "Bussiness and business user are Added.",
+                            }
+                        )
+                    }else{
+                        return res.json(
+                            {
+                                success: 1,
+                                message: "Bussiness Added.",
+                            }
+                        )
+                    }
                  }
              }
             return res.json(

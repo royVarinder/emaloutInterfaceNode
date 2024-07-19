@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             uuid: DataTypes.STRING,
             user_name: DataTypes.STRING,
             user_contact: DataTypes.STRING,
+            user_email: DataTypes.STRING,
             buss_name: DataTypes.STRING,
             buss_contact: DataTypes.STRING,
             category_id: DataTypes.STRING,

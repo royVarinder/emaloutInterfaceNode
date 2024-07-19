@@ -14,31 +14,31 @@ module.exports = (sequelize, DataTypes) => {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-              user_business_uuid: {
+            user_business_uuid: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             user_business_id: {
+            user_business_id: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             contact: {
+            contact: {
                 type:DataTypes.STRING,  
                 defaultValue:''
             } ,
-             email: {
+            email: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             city: {
+            city: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             district: {
+            district: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             status: {
+            status: {
                 type:DataTypes.STRING,
                 defaultValue:'1'
             }
