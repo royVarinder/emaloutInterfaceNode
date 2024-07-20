@@ -2,6 +2,8 @@ const {
     getAllNewsListService
 } = require("./users.service")
 const userTable = require("../../models").em_users;
+const contactUsTable = require("../../models").em_contact_us;
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     getAllNewsListController: (req, res) => {
@@ -22,12 +24,38 @@ module.exports = {
     },
     addUserController: async(req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const createdUser = await userTable.create(req.body);
-            console.log('createdUser :>> ', createdUser);
-
         } catch (error) {
             console.error(error);
+        }
+    },
+    contactUs: async(req, res) => {
+        try {
+            const { uuid } = req.body;
+                 req.body['uuid'] = uuidv4();
+                 const createdRow = await contactUsTable.create(req.body);
+                 if (!!createdRow) {
+                        return res.json(
+                            {
+                                success: 1,
+                                message: "contactUs Information Added.",
+                            }
+                        )
+                 }
+            return res.json(
+                {
+                    success: 0,
+                    message: "Something went wrong!",
+                }
+            )
+        } catch (error) {
+            console.error(error);
+            return res.json(
+                {
+                    success: 0,
+                    message: error.message,
+                }
+            )
         }
     }
 }
