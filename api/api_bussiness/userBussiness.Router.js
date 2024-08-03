@@ -1,24 +1,24 @@
-const { 
+const {
     createUserBussiness,
-     getUserBussiness,
-     getUserBussinessById,
+    getUserBussiness,
+    getUserBussinessById,
     //    updateUserBussiness,
-        // deleteBussinessById 
-        addNewsController,
-        updateNewsController,
-        updateNewsByIdController,
-        getNewsController,
-        deleteNewsByIdController,
-        updateNewsAnyKayByIdController,
-        fetchAllNewsController, 
-    } = require("./userBussiness.contorller");
-const router = require ("express").Router();
+    // deleteBussinessById 
+    addNewsController,
+    updateNewsController,
+    updateNewsByIdController,
+    getNewsController,
+    deleteNewsByIdController,
+    updateNewsAnyKayByIdController,
+    fetchAllNewsController,
+} = require("./userBussiness.contorller");
+const router = require("express").Router();
 
 
-const userBussinessesCalling =()=>{
+const userBussinessesCalling = () => {
     try {
         //METHODS FOR ADMIN USER =====>
-        router.post("/", createUserBussiness);
+        router.post("/createUpdateBusiness", createUserBussiness);
         // router.get("/", getUserBussiness);
         router.post("/featchBussiness", getUserBussiness);
         router.get("/:id", getUserBussinessById);

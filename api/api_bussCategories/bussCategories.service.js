@@ -54,15 +54,15 @@ module.exports = {
 //         'create_time_stamp',
 //         'buss_images');
 serviceGetBussCategories : callback=>{
-        pool.query(`select * from emalout_all_buss_categories where status = "1"`,
-        [],
-        (err, results, fields)=>{
-            if(err){
-                return callback(err);
-            }
-            return callback(null, results)
-        }
-        );
+        // pool.query(`select * from emalout_all_buss_categories where status = "1"`,
+        // [],
+        // (err, results, fields)=>{
+        //     if(err){
+        //         return callback(err);
+        //     }
+        //     return callback(null, results)
+        // }
+        // );
         
     },
     // serviceGetBussinessById : (id, callback)=>{

@@ -15,16 +15,16 @@ const emUserTable = require('./../../models').em_users;
 const bussinessTable = require('./../../models').em_bussiness;
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
-    createUserBussiness:async (req, res) => {
+    createUserBussiness: async (req, res) => {
         try {
             const { uuid } = req.body;
-                console.log('uuid :>> ', uuid);
-             if(!!uuid){
-                  const updatedRo = await bussinessTable.update(req.body, {
-                      where: {
-                          uuid,
-                        }
-                    });
+            console.log('uuid :>> ', uuid);
+            if (!!uuid) {
+                const updatedRo = await bussinessTable.update(req.body, {
+                    where: {
+                        uuid,
+                    }
+                });
                 if (updatedRo > 0) {
                     return res.json(
                         {
@@ -33,33 +33,32 @@ module.exports = {
                         }
                     )
                 }
-             }else{
-                 req.body['uuid'] = uuidv4();
-                 const createdRow = await bussinessTable.create(req.body);
-                 const business_user_data =createdRow?.dataValues;
-                business_user_data['uuid_new'] = uuidv4();
-                let em_user_req_body={
-                    "uuid":business_user_data?.uuid_new,
-                    "name":business_user_data?.user_name,
-                    "user_business_uuid":business_user_data?.uuid,
-                    "user_business_id":business_user_data?.id.toString(),
-                    "contact":business_user_data?.user_contact,
-                    "email":business_user_data?.user_email,
-                    "city":business_user_data?.buss_city,
-                    "district":business_user_data?.buss_district
+            } else {
+                req.body['uuid'] = uuidv4();
+                const createdRow = await bussinessTable.create(req.body);
+                const business_user_data = createdRow?.dataValues;
+                let em_user_req_body = {
+                    "uuid": uuidv4(),
+                    "name": business_user_data?.user_name,
+                    "user_business_uuid": business_user_data?.uuid,
+                    "user_business_id": business_user_data?.id.toString(),
+                    "contact": business_user_data?.user_contact,
+                    "email": business_user_data?.user_email,
+                    "city": business_user_data?.buss_city,
+                    "district": business_user_data?.buss_district
                 }
                 const em_user_createdRow = await emUserTable.create(em_user_req_body);
 
-                 if (!!createdRow) {
+                if (!!createdRow) {
 
-                    if (!!em_user_createdRow){
+                    if (!!em_user_createdRow) {
                         return res.json(
                             {
                                 success: 1,
                                 message: "Bussiness and business user are Added.",
                             }
                         )
-                    }else{
+                    } else {
                         return res.json(
                             {
                                 success: 1,
@@ -67,8 +66,8 @@ module.exports = {
                             }
                         )
                     }
-                 }
-             }
+                }
+            }
             return res.json(
                 {
                     success: 0,
@@ -105,7 +104,7 @@ module.exports = {
             })
         })
     },
-    getUserBussiness: async(req, res) => {
+    getUserBussiness: async (req, res) => {
         // serviceGetBussinesses((err, results) => {
         //     if (err) {
         //         console.error(err);
@@ -119,42 +118,42 @@ module.exports = {
         // })
 
 
-         try {
+        try {
             console.log('req :>> ', req.body);
             const { uuid, id } = req.body;
-                if (!!uuid) {
-                    const bussinessData = await bussinessTable.findAll({
-                        where: { uuid }
-                    })
-                    return res.json(
-                        {
-                            success: 1,
-                            message: "Bussiness fetched successfully!",
-                            data: bussinessData
-                        }
-                    )
-                }
-                if (!!id) {
-                    const bussinessData = await bussinessTable.findAll({
-                        where: { id }
-                    })
-                    return res.json(
-                        {
-                            success: 1,
-                            message: "Bussiness fetched successfully!",
-                            data: bussinessData
-                        }
-                    )
-                }
-                const bussinessData = await bussinessTable.findAll();
-                console.log('bussinessData :>> ', bussinessData);
+            if (!!uuid) {
+                const bussinessData = await bussinessTable.findAll({
+                    where: { uuid }
+                })
                 return res.json(
                     {
                         success: 1,
-                        message: "All Bussiness fetched successfully!",
+                        message: "Bussiness fetched successfully!",
                         data: bussinessData
                     }
                 )
+            }
+            if (!!id) {
+                const bussinessData = await bussinessTable.findAll({
+                    where: { id }
+                })
+                return res.json(
+                    {
+                        success: 1,
+                        message: "Bussiness fetched successfully!",
+                        data: bussinessData
+                    }
+                )
+            }
+            const bussinessData = await bussinessTable.findAll();
+            console.log('bussinessData :>> ', bussinessData);
+            return res.json(
+                {
+                    success: 1,
+                    message: "All Bussiness fetched successfully!",
+                    data: bussinessData
+                }
+            )
         } catch (error) {
             console.error(error);
             return res.json(
@@ -197,24 +196,24 @@ module.exports = {
     //             }
     //         )
     //     }
-        // console.log('req.body :>> ', req.body);
-        // // res.json({
-        // //     success:1,
-        // //     message:"Api res succes."
-        // // })
-        // addNewsService(req.body,(err,results)=>{
-        //      if(err){
-        //         console.error(err);
-        //          return res.json({
-        //         success : 0,
-        //         message : err.message,
-        //     })
-        //     }
-        //     return res.json({
-        //         success : 1,
-        //         message : "Data insert successfully.",
-        //     })
-        // });
+    // console.log('req.body :>> ', req.body);
+    // // res.json({
+    // //     success:1,
+    // //     message:"Api res succes."
+    // // })
+    // addNewsService(req.body,(err,results)=>{
+    //      if(err){
+    //         console.error(err);
+    //          return res.json({
+    //         success : 0,
+    //         message : err.message,
+    //     })
+    //     }
+    //     return res.json({
+    //         success : 1,
+    //         message : "Data insert successfully.",
+    //     })
+    // });
     // },
     // updateNewsController: async (req, res) => {
     //     try {

@@ -34,7 +34,7 @@ app.use("/api/api_users", _userRoutes);
 app.use("/api/api_news", _newsRoutes);
 
 //api for upload images files in 
-app.post("/uploadImages", upload.array('profile'), (req, res)=>{
+app.post("/uploadImages", upload.array('shopImages'), (req, res)=>{
     if(req.files.length === 0){
         res.json({
             success : false,
