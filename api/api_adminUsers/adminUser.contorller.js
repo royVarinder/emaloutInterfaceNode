@@ -44,36 +44,35 @@ module.exports = {
             })
         }
     },
-    getAdminUserById:async (req, res) => {
+    getAdminUserById: async (req, res) => {
         try {
-        console.log('req.body :>> ', req.body);
-        const { uuid } = req.body;
+            const { uuid } = req.body;
 
-        if (!uuid) {
+            if (!uuid) {
+                return res.json({
+                    success: 0,
+                    message: "UUID is required",
+                });
+            }
+            const existingData = await adminUserTable.findOne({ where: { uuid } });
+            if (!existingData) {
+                return res.json({
+                    success: 0,
+                    message: "No data found with the given UUID",
+                });
+            }
+            return res.json({
+                success: 1,
+                data: existingData,
+            });
+
+        } catch (error) {
+            console.error('error :>> ', error);
             return res.json({
                 success: 0,
-                message: "UUID is required",
+                message: error.message,
             });
         }
-        const existingData = await adminUserTable.findOne({ where: { uuid } });
-        if (!existingData) {
-            return res.json({
-                success: 0,
-                message: "No data found with the given UUID",
-            });
-        }
-        return res.json({
-            success: 1,
-            data: existingData,
-        });
-
-    } catch (error) {
-        console.error('error :>> ', error);
-        return res.json({
-            success: 0,
-            message: error.message,
-        });
-    }
     },
     getAdminUser: (req, res) => {
         getAdminUser((err, results) => {
@@ -131,30 +130,34 @@ module.exports = {
         })
     },
     validateAdminUser: async (req, res) => {
-         const { admin_username, admin_password } = req.body;
+        const { admin_username, admin_password } = req.body;
 
-         try {
+        try {
             req.body.admin_password = md5(admin_password);
-            const md5Password =md5(admin_password);
-            const admin = await adminUserTable.findOne({ where: { admin_username,admin_password: md5Password  } });
-        if (!admin) {
+            const md5Password = md5(admin_password);
+            const admin = await adminUserTable.findOne({ where: { admin_username, admin_password: md5Password } });
+            if (!admin) {
+                return res.json({
+                    success: 0,
+                    message: "Authentication failed. User not found.",
+                    data: [],
+
+                });
+            }
+            return res.json({
+                success: 1,
+                message: "Authentication successful.",
+                data: [admin],
+            });
+
+        } catch (error) {
+            console.error('Authentication error :>> ', error);
             return res.json({
                 success: 0,
-                message: "Authentication failed. User not found.",
+                message: error.message,
+                data: [],
             });
         }
-        return res.json({
-            success: 1,
-            message: "Authentication successful.",
-        });
-
-    } catch (error) {
-        console.error('Authentication error :>> ', error);
-        return res.json({
-            success: 0,
-            message: error.message,
-        });
-    }
     },
     addUpdateNews: (req, res) => {
         addUpdateNewsService(req.body, (err, result) => {

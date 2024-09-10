@@ -1,61 +1,61 @@
 const {
     serviceCreateNews,
-     serviceGetNews,
+    serviceGetNews,
     //   serviceDeleteBussiness,
     //    serviceUpdateBussiness,
-        serviceGetNewsById} = require("./news.service");
-const {genSaltSync, hashSync} = require('bcrypt');
+    serviceGetNewsById } = require("./news.service");
+const { genSaltSync, hashSync } = require('bcrypt');
 const newsTable = require('./../../models').em_news;
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
-    createUserBussiness : (req, res)=>{
+    createUserBussiness: (req, res) => {
         const body = req.body;
         const salt = genSaltSync(10);
-        serviceCreateBussiness(body, (err, results)=>{
-            if(err){
+        serviceCreateBussiness(body, (err, results) => {
+            if (err) {
                 console.error(err);
                 return res.status(500).json({
-                    success : false,
-                    message : "Database connection error!"
+                    success: false,
+                    message: "Database connection error!"
                 })
             }
             return res.status(200).json({
-                success : true,
-                message : results
-            })  
+                success: true,
+                message: results
+            })
         })
     },
-    getUserBussinessById : (req, res)=>{
+    getUserBussinessById: (req, res) => {
         const bussId = req.params.id;
-        serviceGetBussinessById(bussId, (err, results)=>{
-            if(err){
+        serviceGetBussinessById(bussId, (err, results) => {
+            if (err) {
                 console.error(err);
-                return 
+                return
             }
-            if(results.length === 0) {
+            if (results.length === 0) {
                 return res.json({
-                    success : 0,
-                    message : "Record not found!"
+                    success: 0,
+                    message: "Record not found!"
                 })
             }
             return res.json({
-                success : 1,
-                message : results,
+                success: 1,
+                message: results,
             })
         })
     },
-    getUserBussiness : (req,res)=>{
-        serviceGetBussinesses((err, results)=>{
-            if(err){
+    getUserBussiness: (req, res) => {
+        serviceGetBussinesses((err, results) => {
+            if (err) {
                 console.error(err);
-                return 
+                return
             }
             return res.json({
-                success : 1,
-                message : results,
+                success: 1,
+                message: results,
             })
-            
+
         })
     },
     // updateUserBussiness : (req, res)=>{
@@ -103,9 +103,14 @@ module.exports = {
     addNews: async (req, res) => {
         try {
             req.body['uuid'] = uuidv4();
-            console.log('createdData :>> ',);
+            // console.log('createdData :>> ',);
+            console.log(':>>>>>>> ', req.files);
+            console.log('req.body :>> ', req.body);
+            //post data
+            // return;
+            const filesPath = req.files?.map((file) => `profile/${file.filename}`)
+            req.body.files = filesPath.join("|")
             const createdRow = await newsTable.create(req.body);
-            console.log('createdRow :>> ', createdRow);
             if (!!createdRow) {
                 return res.json(
                     {
@@ -131,12 +136,12 @@ module.exports = {
             )
         }
     },
-     updateNews: async (req, res) => {
-      try {
+    updateNews: async (req, res) => {
+        try {
             console.log('req.body :>> ', req.body);
             const { uuid } = req.body;
             if (!!uuid) {
-                const updatedRo = await newsTable.update( req.body, {
+                const updatedRo = await newsTable.update(req.body, {
                     where: {
                         uuid,
                     }
@@ -167,39 +172,39 @@ module.exports = {
         }
     },
 
-   getNewsByUuid : async (req, res) => {
-    try {
-        console.log('req.body :>> ', req.body);
-        const { uuid } = req.body;
-        
-        if (!uuid) {
+    getNewsByUuid: async (req, res) => {
+        try {
+            console.log('req.body :>> ', req.body);
+            const { uuid } = req.body;
+
+            if (!uuid) {
+                return res.json({
+                    success: 0,
+                    message: "UUID is required.",
+                });
+            }
+
+            const findNews = await newsTable.findOne({ where: { uuid } });
+
+            if (findNews) {
+                return res.json({
+                    success: 1,
+                    message: findNews,
+                });
+            }
+
             return res.json({
                 success: 0,
-                message: "UUID is required.",
+                message: "News not found!",
             });
-        }
 
-        const findNews = await newsTable.findOne({ where: { uuid } });
-        
-        if (findNews) {
+        } catch (error) {
+            console.error(error);
             return res.json({
-                success: 1,
-                message: findNews,
+                success: 0,
+                message: error.message,
             });
         }
-
-        return res.json({
-            success: 0,
-            message: "News not found!",
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.json({
-            success: 0,
-            message: error.message,
-        });
-    }
-},
+    },
 
 }
