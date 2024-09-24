@@ -1,3 +1,4 @@
+const uploadFiles = require("../../middleware/uploadFiles");
 const {
     createUser,
     getAdminUser,
@@ -8,7 +9,8 @@ const {
     addUpdateNews,
     getNewsListController,
     getChannelMenuListController,
-    getNewsDetailsController
+    getNewsDetailsController,
+    addUpdateChannel
 } = require("./adminUser.contorller");
 const router = require("express").Router();
 
@@ -23,9 +25,15 @@ const adminUsersCalling = () => {
         router.post("/getNewsList", getNewsListController);
         router.post("/getChannelMenuList", getChannelMenuListController);
         router.get("/", getAdminUser);
-        router.post("/:id", getAdminUserById);
+        router.post("/getAdminUser/:id", getAdminUserById);
         router.patch("/", updateUserAdmin);
         router.delete("/:id", deleteAdminUser);
+
+
+        ///new apis with sequilizer
+        router.post("/addUpdateChannel", uploadFiles.single('channelLogo'), addUpdateChannel)
+
+
     } catch (error) {
         console.error(error);
     }

@@ -25,7 +25,7 @@ fs
         db[model.name] = model;
     });
 
-
+// sequelize.sync({alter:true})
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

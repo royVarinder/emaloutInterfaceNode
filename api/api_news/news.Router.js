@@ -7,7 +7,7 @@ const newsRouter = () => {
     try {
         router.post("/addNews",  uploadFiles.array('files'), addNews);
         router.post("/updateNews", updateNews);
-        router.post("/getNewsByUuid", getNewsByUuid);
+        router.post("/getNewsBy", getNewsByUuid);
       
     } catch (error) {
         console.error(error);

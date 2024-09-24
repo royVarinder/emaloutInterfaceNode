@@ -1,3 +1,4 @@
+const uploadFiles = require("../../middleware/uploadFiles");
 const {
     createUserBussiness,
     getUserBussiness,
@@ -18,14 +19,14 @@ const router = require("express").Router();
 const userBussinessesCalling = () => {
     try {
         //METHODS FOR ADMIN USER =====>
-        router.post("/createUpdateBusiness", createUserBussiness);
+        router.post("/createUpdateBusiness", uploadFiles.array("shopImages"), createUserBussiness);
         // router.get("/", getUserBussiness);
-        router.post("/featchBussiness", getUserBussiness);
+        router.post("/fetchBusiness", getUserBussiness);
         router.get("/:id", getUserBussinessById);
         // router.post("/addNews", addNewsController);
         // router.post("/updateNews", updateNewsController);
         // router.post("/fetchAllNews", fetchAllNewsController);
-        router.post("/addNews/:id", updateNewsByIdController);
+        // router.post("/addNews/:id", updateNewsByIdController);
         router.post("/fetchAllNews", getNewsController);
         router.post("/deleteNews/:id", deleteNewsByIdController);
         router.post("/updateNewsAnyKayById/:id", updateNewsAnyKayByIdController);

@@ -1,101 +1,18 @@
-const {
-    // serviceCreateBussiness, 
-    serviceGetBussCategories, 
-    // serviceDeleteBussiness, 
-    // serviceUpdateBussiness, 
-    // serviceGetBussinessById
-} = require("./bussCategories.service");
-const {genSaltSync, hashSync} = require('bcrypt');
+
+const { genSaltSync, hashSync } = require('bcrypt');
+const { em_category } = require('../../models')
+const { apiResponse } = require("../../util");
 module.exports = {
-    // createUserBussiness : (req, res)=>{
-    //     const body = req.body;
-    //     const salt = genSaltSync(10);
-    //     serviceCreateBussiness(body, (err, results)=>{
-    //         if(err){
-    //             console.error(err);
-    //             return res.status(500).json({
-    //                 success : false,
-    //                 message : "Database connection error!"
-    //             })
-    //         }
-    //         return res.status(200).json({
-    //             success : true,
-    //             message : results
-    //         })  
-    //     })
-    // },
-    // getUserBussinessById : (req, res)=>{
-    //     const adminId = req.params.id;
-    //     serviceGetBussinessById(adminId, (err, results)=>{
-    //         if(err){
-    //             console.error(err);
-    //             return 
-    //         }
-    //         if(results.length === 0) {
-    //             return res.json({
-    //                 success : 0,
-    //                 message : "Record not found!"
-    //             })
-    //         }
-    //         return res.json({
-    //             success : 1,
-    //             message : results,
-    //         })
-    //     })
-    // },
-    serviceGetBussCategories : (req,res)=>{
-        serviceGetBussCategories((err, results)=>{
-            if(err){
-                console.error(err);
-                return 
+    serviceGetBussCategories: async (req, res) => {
+        try {
+            const categories = await em_category.findAll({ where: { status: "1" } })
+            if (!!categories) {
+                return res.json(apiResponse(true, "Category fetched successfully!", categories))
             }
-            return res.json({
-                success : 1,
-                message : results,
-            })
-            
-        })
+            return res.json(apiResponse(false, "Failed to fetch categories!", []))
+        } catch (error) {
+            console.error(error);
+            return res.json(apiResponse(false, error.message, []))
+        }
     },
-    // updateUserBussiness : (req, res)=>{
-    //     const body = req.body;
-    //     const salt = genSaltSync(10);
-
-    //     body.admin_password = hashSync(body.admin_password, salt);
-
-    //     serviceUpdateBussiness(body, (err, results)=>{
-    //         if(err){
-    //             console.error(err);
-    //             return
-    //         }
-    //         if(results.length == 0){
-    //             return res.json({
-    //                 success  : 0,
-    //                 message: "Failed to update!"
-    //             })
-    //         }
-    //         return res.json({
-    //             success : 1,
-    //             message : "Admin updated successfully!"
-    //         })  
-    //     })
-    // },
-    // deleteBussinessById : (req, res)=>{
-    //     const adminId = req.params.id;
-    //     serviceDeleteBussiness(adminId, (err,results)=>{
-    //         if(err){
-    //             console.error(err);
-    //             return
-    //         }
-    //         if(!results) {
-    //             return res.json({
-    //                 success : 0,
-    //                 message : "Record not found!"
-    //             })
-    //         }
-    //         return res.json({
-    //             success : 1,
-    //             message : "Admin user deleted successfully",
-    //         })
-    //     })
-    // },
 }

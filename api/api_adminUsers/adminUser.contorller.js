@@ -14,8 +14,10 @@ const {
 const { genSaltSync, hashSync } = require('bcrypt');
 const md5 = require("md5");
 const adminUserTable = require('./../../models').em_ad_users;
+const channelTable = require('./../../models').em_channel;
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
+const { apiResponse } = require("../../util");
 module.exports = {
     createUser: async (req, res) => {
         try {
@@ -24,24 +26,13 @@ module.exports = {
             req.body['uuid'] = uuidv4();
             const createdAdminUser = await adminUserTable.create(req.body);
             if (!!createdAdminUser) {
-                return res.json({
-                    success: true,
-                    message: "Admin user created successfully!",
-                    data: [],
-                })
+                return res.json(apiResponse(true, 'Admin user created successfully', createdAdminUser))
             }
-            return res.json({
-                success: false,
-                message: "Failed to create admin user!",
-                data: [],
-            })
+            return res.json(apiResponse(false, 'Failed to create admin user!', []))
         } catch (error) {
             console.error(error);
-            return res.json({
-                success: false,
-                message: error?.message,
-                data: [],
-            })
+            return res.json(apiResponse(false, error.message, []))
+
         }
     },
     getAdminUserById: async (req, res) => {
@@ -135,23 +126,23 @@ module.exports = {
         try {
             req.body.admin_password = md5(admin_password);
             const md5Password = md5(admin_password);
-            const admin = await adminUserTable.findOne({ where: { admin_username, admin_password: md5Password } });
-            if (!admin) {
-                return res.json({
-                    success: 0,
-                    message: "Authentication failed. User not found.",
-                    data: [],
-
-                });
+            const admin = await adminUserTable.findOne({ where: { admin_username, admin_password: md5Password, status: '1' }, attributes: ['admin_username', 'channel_id'] });
+            if (!!admin) {
+                const { channel_id } = admin;
+                console.log('channel_id :>> ', channel_id);
+                const channelDetails = await channelTable.findOne({ where: { id: channel_id, status: '1' }, attributes: ['name', 'channel_logo', 'description'] })
+                if (!!channelDetails) {
+                    const updateData = { ...admin.dataValues, channelDetails: channelDetails?.dataValues }
+                    if (updateData) {
+                        return res.json(apiResponse(true, 'Admin login success!', updateData));
+                    }
+                }
+                return res.json(apiResponse(false, 'Channel is not active', []))
             }
-            return res.json({
-                success: 1,
-                message: "Authentication successful.",
-                data: [admin],
-            });
+            return res.json(apiResponse(false, 'Wrong admin user details!', []))
+
 
         } catch (error) {
-            console.error('Authentication error :>> ', error);
             return res.json({
                 success: 0,
                 message: error.message,
@@ -222,6 +213,38 @@ module.exports = {
                 data: result
             })
         })
+    },
+    addUpdateChannel: async (req, res) => {
+        try {
+            const { file, body } = req;
+            const { uuid } = body;
+            let whereClause = {}
+            if (!!uuid) {
+                //update
+                delete body.uuid;
+                whereClause.uuid = uuid;
+                if (!!file) {
+                    const LogoPath = `/profile/${file?.filename}`;
+                    body.channel_logo = LogoPath
+                }
+                console.log('body :>> ', body);
+                const result = await channelTable.update(body, { where: whereClause });
+                if (result[0] > 0) {
+                    return res.json(apiResponse(true, 'Channel update successfully!', []))
+                }
+                return res.json(apiResponse(false, 'Failed to updated channel!'))
+
+            }
+            //create
+            const reqData = { ...body, channel_logo: LogoPath }
+            const createdChannel = await channelTable.create(reqData);
+            if (!!createdChannel) {
+                return res.json(apiResponse(true, 'Channel created successfully!', createdChannel))
+            }
+            return res.json(apiResponse(false, 'Failed to create channel!', createdChannel))
+        } catch (error) {
+            console.error(error);
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, DataTypes) => {
     class emCategory extends Model {
         
@@ -8,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             uuid: {
                 type:DataTypes.STRING,
-                defaultValue:''
+                defaultValue:uuidv4()
             } ,
             category_name: {
                 type:DataTypes.STRING,
@@ -24,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             modelName: "em_category",
         }
     );
+
 
     // emCategory.sync();
     // emCategory.sync({ alter: true });

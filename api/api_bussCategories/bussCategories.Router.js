@@ -12,7 +12,7 @@ const userBussinessesCalling =()=>{
     try {
         //METHODS FOR ADMIN USER =====>
         // router.post("/", createUserBussiness);
-        router.get("/", serviceGetBussCategories);
+        router.post("/getBussCategory", serviceGetBussCategories);
         // router.get("/:id", getUserBussinessById);
         // router.patch("/", updateUserBussiness);
         // router.delete("/:id", deleteBussinessById);

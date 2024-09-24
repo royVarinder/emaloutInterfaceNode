@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             // videos : DataTypes.STRING,
             channel_id: DataTypes.STRING,
-            author_id: DataTypes.STRING,
-            city_id: DataTypes.STRING
+            // author_id: DataTypes.STRING,
+            // city_id: DataTypes.STRING
         },
         {
             sequelize,

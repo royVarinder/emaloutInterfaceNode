@@ -13,12 +13,25 @@ const { genSaltSync, hashSync } = require('bcrypt');
 // const newsTable = require('./../../models').em_users;
 const emUserTable = require('./../../models').em_users;
 const bussinessTable = require('./../../models').em_bussiness;
+const categoryTable = require('./../../models').em_category;
+const newsTable = require('./../../models').em_news;
 const { v4: uuidv4 } = require('uuid');
+const { apiResponse } = require("../../util");
+const em_category = require("../../models/em_category");
 module.exports = {
     createUserBussiness: async (req, res) => {
         try {
-            const { uuid } = req.body;
-            console.log('uuid :>> ', uuid);
+            const { files, body } = req;
+            const { uuid } = body;
+            console.log('body :>> ', body);
+            // return;
+            let filesUrls = []
+            if (files.length > 0) {
+                filesUrls = files.map((items) => {
+                    return `/profile/${items.filename}`
+                })
+            }
+
             if (!!uuid) {
                 const updatedRo = await bussinessTable.update(req.body, {
                     where: {
@@ -34,7 +47,7 @@ module.exports = {
                     )
                 }
             } else {
-                req.body['uuid'] = uuidv4();
+                body['buss_images'] = !!filesUrls ? filesUrls.join("|") : ""
                 const createdRow = await bussinessTable.create(req.body);
                 const business_user_data = createdRow?.dataValues;
                 let em_user_req_body = {
@@ -52,321 +65,148 @@ module.exports = {
                 if (!!createdRow) {
 
                     if (!!em_user_createdRow) {
-                        return res.json(
-                            {
-                                success: 1,
-                                message: "Bussiness and business user are Added.",
-                            }
-                        )
+                        return res.json(apiResponse(true, 'Business created successfully!', createdRow))
                     } else {
-                        return res.json(
-                            {
-                                success: 1,
-                                message: "Bussiness Added.",
-                            }
-                        )
+                        return res.json(apiResponse(false, 'Failed to create business!', []))
                     }
                 }
             }
-            return res.json(
-                {
-                    success: 0,
-                    message: "Something went wrong!",
-                }
-            )
+            return res.json(apiResponse(false, 'Something went wrong!', []))
+
 
         } catch (error) {
             console.error(error);
-            return res.json(
-                {
-                    success: 0,
-                    message: error.message,
-                }
-            )
+            return res.json(apiResponse(false, error.message, []))
+
         }
     },
     getUserBussinessById: (req, res) => {
-        const bussId = req.params.id;
-        serviceGetBussinessById(bussId, (err, results) => {
-            if (err) {
-                console.error(err);
-                return
-            }
-            if (results.length === 0) {
-                return res.json({
-                    success: 0,
-                    message: "Record not found!"
-                })
-            }
-            return res.json({
-                success: 1,
-                message: results,
-            })
-        })
+
     },
     getUserBussiness: async (req, res) => {
-        // serviceGetBussinesses((err, results) => {
-        //     if (err) {
-        //         console.error(err);
-        //         return
-        //     }
-        //     return res.json({
-        //         success: 1,
-        //         message: results,
-        //     })
-
-        // })
-
-
         try {
-            console.log('req :>> ', req.body);
             const { uuid, id } = req.body;
             if (!!uuid) {
-                const bussinessData = await bussinessTable.findAll({
-                    where: { uuid }
+                const businessData = await bussinessTable.findAll({
+                    where: { uuid, status: '1' }
                 })
-                return res.json(
-                    {
-                        success: 1,
-                        message: "Bussiness fetched successfully!",
-                        data: bussinessData
+                const categoryIds = businessData.map((bus) => bus.category_id);
+                const categoryDetails = await categoryTable.findAll({
+                    where: {
+                        id: categoryIds,
+                        status: "1"
                     }
-                )
+                });
+                const updateBusinessData = businessData.map((items) => {
+                    const dataValues = items?.dataValues;
+                    return { ...dataValues, categoryDetails: categoryDetails.find((cate) => cate.id == dataValues.category_id) }
+                })
+
+                return res.json(apiResponse(true, 'Business fetched successfully!', updateBusinessData))
             }
             if (!!id) {
-                const bussinessData = await bussinessTable.findAll({
-                    where: { id }
+                const businessData = await bussinessTable.findAll({
+                    where: { id, status: 1 }
                 })
-                return res.json(
-                    {
-                        success: 1,
-                        message: "Bussiness fetched successfully!",
-                        data: bussinessData
+                const categoryIds = businessData.map((bus) => bus.category_id);
+                const categoryDetails = await categoryTable.findAll({
+                    where: {
+                        id: categoryIds,
+                        status: "1"
                     }
-                )
+                });
+                const updateBusinessData = businessData.map((items) => {
+                    const dataValues = items?.dataValues;
+                    return { ...dataValues, categoryDetails: categoryDetails.find((cate) => cate.id == dataValues.category_id) }
+                })
+                return res.json(apiResponse(true, 'Business fetched successfully!', updateBusinessData))
             }
-            const bussinessData = await bussinessTable.findAll();
-            console.log('bussinessData :>> ', bussinessData);
-            return res.json(
-                {
-                    success: 1,
-                    message: "All Bussiness fetched successfully!",
-                    data: bussinessData
+            const businessData = await bussinessTable.findAll();
+            //get categories id 
+            const categoryIds = businessData.map((bus) => bus.category_id);
+            const categoryDetails = await categoryTable.findAll({
+                where: {
+                    id: categoryIds,
+                    status: "1"
                 }
-            )
+            });
+            const newCategoryArray = categoryDetails.map((cat) => cat.dataValues);
+            const updateBusinessData = newCategoryArray.map((items) => {
+                return { ...items, busDetails: businessData.filter((cate) => cate.category_id == items?.id) || {} }
+            })
+            return res.json(apiResponse(true, 'All business fetched successfully', updateBusinessData))
         } catch (error) {
             console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
+            return res.json(apiResponse(false, error.message, []))
         }
 
     },
 
-    // addNewsController: async (req, res) => {
-    //     try {
-    //         req.body['uuid'] = uuidv4();
-    //         console.log('createdData :>> ',);
-    //         const createdRow = await newsTable.create(req.body);
-    //         console.log('createdRow :>> ', createdRow);
-    //         if (!!createdRow) {
-    //             return res.json(
-    //                 {
-    //                     success: 1,
-    //                     message: "Data has been inserted",
-    //                 }
-    //             )
-    //         }
-    //         return res.json(
-    //             {
-    //                 success: 0,
-    //                 message: "Something went wrong!",
-    //             }
-    //         )
-
-    //     } catch (error) {
-    //         console.error(error);
-    //         return res.json(
-    //             {
-    //                 success: 1,
-    //                 message: error.message,
-    //             }
-    //         )
-    //     }
-    // console.log('req.body :>> ', req.body);
-    // // res.json({
-    // //     success:1,
-    // //     message:"Api res succes."
-    // // })
-    // addNewsService(req.body,(err,results)=>{
-    //      if(err){
-    //         console.error(err);
-    //          return res.json({
-    //         success : 0,
-    //         message : err.message,
-    //     })
-    //     }
-    //     return res.json({
-    //         success : 1,
-    //         message : "Data insert successfully.",
-    //     })
-    // });
-    // },
-    // updateNewsController: async (req, res) => {
-    //     try {
-    //         console.log('req.body :>> ', req.body);
-    //         const { uuid, bus_email } = req.body;
-    //         if (!!uuid) {
-    //             const updatedRo = await newsTable.update({ bus_email }, {
-    //                 where: {
-    //                     uuid,
-    //                 }
-    //             });
-    //             if (updatedRo > 0) {
-    //                 return res.json(
-    //                     {
-    //                         success: 0,
-    //                         message: "Data has been updated",
-    //                     }
-    //                 )
-    //             }
-    //             return res.json(
-    //                 {
-    //                     success: 0,
-    //                     message: "Something went wrong!",
-    //                 }
-    //             )
-
-
-    //         }
-
-    //     } catch (error) {
-    //         console.error(error);
-    //         return res.json(
-    //             {
-    //                 success: 1,
-    //                 message: error.message,
-    //             }
-    //         )
-    //     }
-    // },
-
-
-    // fetchAllNewsController: async (req, res) => {
-    //     try {
-    //         console.log('req :>> ', req.body);
-    //         const { uuid, id } = req.body;
-    //         if (!!uuid) {
-    //             const newsData = await newsTable.findAll({
-    //                 where: { uuid },
-    //                 attributes: ['first_name', 'last_name']
-
-    //             })
-    //             return res.json(
-    //                 {
-    //                     success: 1,
-    //                     message: "Data fetched successfully!",
-    //                     data: newsData
-    //                 }
-    //             )
-    //         }
-    //         if (!!id) {
-    //             const newsData = await newsTable.findAll({
-    //                 where: { id }
-    //             })
-    //             return res.json(
-    //                 {
-    //                     success: 1,
-    //                     message: "Data fetched successfully!",
-    //                     data: newsData
-    //                 }
-    //             )
-    //         }
-    //         const newsData = await newsTable.findAll();
-    //         return res.json(
-    //             {
-    //                 success: 1,
-    //                 message: "Data fetched successfully!",
-    //                 data: newsData
-    //             }
-    //         )
-    //     } catch (error) {
-    //         console.error(error);
-    //         return res.json(
-    //             {
-    //                 success: 1,
-    //                 message: error.message,
-    //             }
-    //         )
-    //     }
-    // },
 
 
 
     updateNewsByIdController: (req, res) => {
 
-        updateNewsByIdService(req.body, (err, results) => {
-            if (err) {
-                console.error(err);
-                return res.json({
-                    success: 0,
-                    message: err.message,
-                })
-            }
-            return res.json({
-                success: 1,
-                message: "Data Update successfully."
-            })
-        })
+        // updateNewsByIdService(req.body, (err, results) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return res.json({
+        //             success: 0,
+        //             message: err.message,
+        //         })
+        //     }
+        //     return res.json({
+        //         success: 1,
+        //         message: "Data Update successfully."
+        //     })
+        // })
     },
-    getNewsController: (req, res) => {
-
-        getNewsService(req.body, (err, results) => {
-            if (err) {
-                console.error('err :>> ', err);
-                return res.json({
-                    success: 0,
-                    message: err.message,
-                })
+    getNewsController: async (req, res) => {
+        try {
+            const { limit, offset, channel_id } = req.body;
+            let whereClause = {}
+            if (channel_id) {
+                whereClause = { channel_id }
             }
-            return res.json({
-                success: 1,
-                message: "Data fetch successfully."
-            })
-        })
+            const fetchedNews = await newsTable.findAll({ where: whereClause })
+            if (!!fetchedNews) {
+                return res.json(apiResponse(true, 'News fetched successfully!', fetchedNews))
+            }
+            return res.json(apiResponse(false, 'Failed to fetch news', []))
+        } catch (error) {
+            console.error(error);
+            res.json(apiResponse(false, error.message, []))
+        }
     },
     deleteNewsByIdController: (req, res) => {
-        deleteNewsByIdService(req.body, (err, results) => {
-            if (err) {
-                console.log('err :>> ', err);
-                return res.json({
-                    success: 0,
-                    message: err.message
-                })
-            }
-            return res.json({
-                success: 1,
-                message: "Data deleted successfully."
-            })
-        })
+        // deleteNewsByIdService(req.body, (err, results) => {
+        //     if (err) {
+        //         console.log('err :>> ', err);
+        //         return res.json({
+        //             success: 0,
+        //             message: err.message
+        //         })
+        //     }
+        //     return res.json({
+        //         success: 1,
+        //         message: "Data deleted successfully."
+        //     })
+        // })
 
     },
     updateNewsAnyKayByIdController: (req, res) => {
-        updateNewsAnyKayByIdService(req.body, (err, result) => {
-            if (err) {
-                return res.json({
-                    success: 0,
-                    message: err.message
-                })
-            }
-            return res.json({
-                success: 1,
-                message: "Data update for specific key with ID."
-            })
-        })
+        // updateNewsAnyKayByIdService(req.body, (err, result) => {
+        //     if (err) {
+        //         return res.json({
+        //             success: 0,
+        //             message: err.message
+        //         })
+        //     }
+        //     return res.json({
+        //         success: 1,
+        //         message: "Data update for specific key with ID."
+        //     })
+        // })
 
     },
 

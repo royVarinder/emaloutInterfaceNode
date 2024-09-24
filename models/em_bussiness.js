@@ -1,24 +1,69 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require('uuid');
 module.exports = (sequelize, DataTypes) => {
-    class emBussiness extends Model {
-        
+    class emBusiness extends Model {
+
     }
-    emBussiness.init(
+   
+    emBusiness.init(
         {
-            uuid: DataTypes.STRING,
-            user_name: DataTypes.STRING,
-            user_contact: DataTypes.STRING,
-            user_email: DataTypes.STRING,
-            buss_name: DataTypes.STRING,
-            buss_contact: DataTypes.STRING,
-            category_id: DataTypes.STRING,
-            buss_address: DataTypes.STRING,
-            buss_city: DataTypes.STRING,
-            buss_district: DataTypes.STRING,
-            features: DataTypes.STRING,
-            weekdays: DataTypes.STRING,
-            buss_images: DataTypes.STRING,
+            uuid: {
+                type: DataTypes?.STRING,
+                defaultValue: uuidv4()
+            },
+            status: {
+                type: DataTypes?.STRING,
+                defaultValue: "1"
+            },
+            user_name: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            user_contact: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            user_email: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            buss_name: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            buss_contact: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            category_id: {
+                type: DataTypes?.STRING,
+                defaultValue: "",
+            },
+            buss_address: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            buss_city: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            buss_district: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            features: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            weekdays: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
+            buss_images: {
+                type: DataTypes?.STRING,
+                defaultValue: ""
+            },
         },
         {
             sequelize,
@@ -26,7 +71,8 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    // emBussiness.sync();
-    // emBussiness.sync({ alter: true });
-    return emBussiness;
+    // emBusiness.belongsTo(Model.emCategory, {foreignKey : "category_id", as : 'category'})
+    // emBusiness.sync();
+    // emBusiness.sync({ alter: true });
+    return emBusiness;
 };

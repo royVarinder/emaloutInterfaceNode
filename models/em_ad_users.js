@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,
-             admin_channel: {
+             channel_id: {
                 type:DataTypes.STRING,
                 defaultValue:''
             } ,

@@ -7,6 +7,7 @@ const {
 const { genSaltSync, hashSync } = require('bcrypt');
 const newsTable = require('./../../models').em_news;
 const { v4: uuidv4 } = require('uuid');
+const { apiResponse } = require("../../util");
 
 module.exports = {
     createUserBussiness: (req, res) => {
@@ -103,37 +104,15 @@ module.exports = {
     addNews: async (req, res) => {
         try {
             req.body['uuid'] = uuidv4();
-            // console.log('createdData :>> ',);
-            console.log(':>>>>>>> ', req.files);
-            console.log('req.body :>> ', req.body);
-            //post data
-            // return;
             const filesPath = req.files?.map((file) => `profile/${file.filename}`)
             req.body.files = filesPath.join("|")
             const createdRow = await newsTable.create(req.body);
             if (!!createdRow) {
-                return res.json(
-                    {
-                        success: 1,
-                        message: "News added successfully.",
-                    }
-                )
+                return res.json(apiResponse(true, 'News added successfully!', createdRow))
             }
-            return res.json(
-                {
-                    success: 0,
-                    message: "Something went wrong!",
-                }
-            )
-
         } catch (error) {
             console.error(error);
-            return res.json(
-                {
-                    success: 1,
-                    message: error.message,
-                }
-            )
+            return res.json(apiResponse(false, error.message, []))
         }
     },
     updateNews: async (req, res) => {
