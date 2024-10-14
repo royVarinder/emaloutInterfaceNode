@@ -117,7 +117,6 @@ module.exports = {
     },
     updateNews: async (req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const { uuid } = req.body;
             if (!!uuid) {
                 const updatedRo = await newsTable.update(req.body, {
@@ -153,7 +152,6 @@ module.exports = {
 
     getNewsByUuid: async (req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const { uuid } = req.body;
 
             if (!uuid) {

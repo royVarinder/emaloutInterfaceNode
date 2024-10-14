@@ -23,7 +23,6 @@ module.exports = {
         try {
             const { files, body } = req;
             const { uuid } = body;
-            console.log('body :>> ', body);
             // return;
             let filesUrls = []
             if (files.length > 0) {
@@ -86,6 +85,9 @@ module.exports = {
     getUserBussiness: async (req, res) => {
         try {
             const { uuid, id } = req.body;
+            // console.log('req 111:>> ', req);
+            console.log('req.body 111:>> ', req.body);
+            console.log('req.params 111:>> ', req.params);
             if (!!uuid) {
                 const businessData = await bussinessTable.findAll({
                     where: { uuid, status: '1' }
@@ -181,7 +183,7 @@ module.exports = {
     deleteNewsByIdController: (req, res) => {
         // deleteNewsByIdService(req.body, (err, results) => {
         //     if (err) {
-        //         console.log('err :>> ', err);
+        //         console.log('err : ', err);
         //         return res.json({
         //             success: 0,
         //             message: err.message

@@ -58,7 +58,7 @@ module.exports = {
             });
 
         } catch (error) {
-            console.error('error :>> ', error);
+            console.error('error : ', error);
             return res.json({
                 success: 0,
                 message: error.message,
@@ -129,7 +129,6 @@ module.exports = {
             const admin = await adminUserTable.findOne({ where: { admin_username, admin_password: md5Password, status: '1' }, attributes: ['admin_username', 'channel_id'] });
             if (!!admin) {
                 const { channel_id } = admin;
-                console.log('channel_id :>> ', channel_id);
                 const channelDetails = await channelTable.findOne({ where: { id: channel_id, status: '1' }, attributes: ['name', 'channel_logo', 'description'] })
                 if (!!channelDetails) {
                     const updateData = { ...admin.dataValues, channelDetails: channelDetails?.dataValues }
@@ -227,7 +226,6 @@ module.exports = {
                     const LogoPath = `/profile/${file?.filename}`;
                     body.channel_logo = LogoPath
                 }
-                console.log('body :>> ', body);
                 const result = await channelTable.update(body, { where: whereClause });
                 if (result[0] > 0) {
                     return res.json(apiResponse(true, 'Channel update successfully!', []))

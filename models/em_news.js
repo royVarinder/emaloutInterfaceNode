@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             uuid: DataTypes.STRING,
             title: DataTypes.STRING,
-            description: DataTypes.STRING,
+            description: DataTypes.TEXT,
             author_name: DataTypes.STRING,
             facebook_link: DataTypes.STRING,
             insta_link: DataTypes.STRING,

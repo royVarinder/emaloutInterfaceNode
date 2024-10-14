@@ -29,7 +29,6 @@ module.exports = {
     },
 
     addNewsService:(reqData,callback)=>{
-    console.log('reqData :>> ', reqData);
     pool.query(`insert into emalout_news (title, description, author,facebook_link, insta_link, youtube_link, status, images, videos, channel_id, author_id, city_id)
         values(?,?,?,?,?,?,?,?,?,?,?,?)`,
          [
@@ -56,7 +55,6 @@ module.exports = {
     },
     
     updateNewsByIdService:(reqData,callback)=>{
-    console.log('reqData :>> ', reqData);
     pool.query(`update emalout_news set title=?, description=?, author=?,facebook_link=?, insta_link=?, youtube_link=?, status=?, images=?, videos=?, channel_id=?, author_id=?, city_id=? where id=?`,[
             reqData.title,
             reqData.description,
@@ -84,28 +82,23 @@ module.exports = {
         if(!!reqData){
              key = Object.keys(reqData);
         }
-        console.log('key :>> ', key);
         pool.query(`${!!reqData[key] && reqData[key]!==''?`SELECT * FROM emalout_news where ${key}=?`:'SELECT * FROM emalout_news'}`,[reqData[key]],(err,results,fields)=>{
             if(err){
                 return callback(err);
             }
-            console.log('results :>> ', results);
             return callback(null,results)
         })
     },
      deleteNewsByIdService:(reqData,callback)=>{
-        console.log('reqData :>> ', reqData);
         const id=reqData?.id;
         pool.query(`delete from emalout_news where id = ?`,[id],(err,result,fields)=>{
             if(err){
                 return  callback(err);
             }
-            console.log('result :>> ', result);
             return  callback(null,result)
         })
      },
      updateNewsAnyKayByIdService:(reqData,callback)=>{
-        console.log('reqData :>> ', reqData);
         let key='';
         let value='';
         if(!!reqData){

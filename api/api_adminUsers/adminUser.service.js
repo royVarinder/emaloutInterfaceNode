@@ -106,7 +106,7 @@ module.exports = {
                 [title, description, images, author_name, '1', channel_id, currentTimeStamp, newsId],
                 (err, result, fields) => {
                     if (err) {
-                        console.log('err :>> ', err?.sql);
+                        console.log('err : ', err?.sql);
                         return callback(err?.sqlMessage)
                     }
                     return callback(null, result)
@@ -118,7 +118,7 @@ module.exports = {
                 [title, description, images, author_name, channel_id, '1', currentTimeStamp, currentTimeStamp],
                 (err, result, fields) => {
                     if (err) {
-                        console.log('err :>> ', err?.sql);
+                        console.log('err : ', err?.sql);
                         return callback(err?.sqlMessage)
                     }
                     return callback(null, result)
@@ -133,7 +133,7 @@ module.exports = {
             [channel_id, '1'],
             (err, result, fields) => {
                 if (err) {
-                    console.log('err :>> ', err?.sql);
+                    console.log('err : ', err?.sql);
                     return callback(err?.sqlMessage)
                 }
                 return callback(null, result)
@@ -145,7 +145,7 @@ module.exports = {
             ['1'],
             (err, result, fields) => {
                 if (err) {
-                    console.log('err :>> ', err?.sql);
+                    console.log('err : ', err?.sql);
                     return callback(err?.sqlMessage)
                 }
                 return callback(null, result)
@@ -157,7 +157,7 @@ module.exports = {
             [reqData?.newsId],
             (err, result, fields) => {
                 if (err) {
-                    console.log('err :>> ', err?.sql);
+                    console.log('err : ', err?.sql);
                     return callback(err?.sqlMessage)
                 }
                 return callback(null, result)
