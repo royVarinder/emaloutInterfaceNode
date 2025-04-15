@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes?.STRING,
                 defaultValue: ""
             },
+            description: {
+                type: DataTypes?.TEXT,
+                defaultValue: ""
+            },
             category_id: {
                 type: DataTypes?.STRING,
                 defaultValue: "",
@@ -63,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
             buss_images: {
                 type: DataTypes?.STRING,
                 defaultValue: ""
+                
             },
         },
         {

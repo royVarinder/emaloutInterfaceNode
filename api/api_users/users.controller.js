@@ -22,7 +22,7 @@ module.exports = {
             })
         })
     },
-    addUserController: async(req, res) => {
+    addUserController: async (req, res) => {
         try {
             const createdUser = await userTable.create(req.body);
 
@@ -30,11 +30,11 @@ module.exports = {
             console.error(error);
         }
     },
-    addUpdateCategory: async(req, res) => {
+    addUpdateCategory: async (req, res) => {
         try {
             const { uuid } = req.body;
-             if (!!uuid) {
-                const updatedRow = await categoryTable.update( req.body, {
+            if (!!uuid) {
+                const updatedRow = await categoryTable.update(req.body, {
                     where: {
                         uuid,
                     }
@@ -47,8 +47,8 @@ module.exports = {
                         }
                     )
                 }
-            }else{
-            req.body['uuid'] = uuidv4();
+            } else {
+                req.body['uuid'] = uuidv4();
                 const createdRow = await categoryTable.create(req.body);
                 if (!!createdRow) {
                     return res.json(
@@ -76,37 +76,37 @@ module.exports = {
             )
         }
     },
-     fetchCategory: async(req, res) => {
-          try {
-        const { uuid } = req.body;
-        
-        if (!!uuid) {
-            const findNews = await categoryTable.findOne({ where: { uuid } });
-            
-            if (findNews) {
-                return res.json({
-                    success: 1,
-                    message: "All category fetched successfully!",
-                    data: findNews,
-                });
-            }
-        }
-        const categoryData = await categoryTable.findAll({ where: { status:1 } });
-                return res.json(
-                    {
+    fetchCategory: async (req, res) => {
+        try {
+            const { uuid } = req.body;
+
+            if (!!uuid) {
+                const findNews = await categoryTable.findOne({ where: { uuid } });
+
+                if (findNews) {
+                    return res.json({
                         success: 1,
                         message: "All category fetched successfully!",
-                        data: categoryData
-                    }
-                )
+                        data: findNews,
+                    });
+                }
+            }
+            const categoryData = await categoryTable.findAll({ where: { status: 1 } });
+            return res.json(
+                {
+                    success: 1,
+                    message: "All category fetched successfully!",
+                    data: categoryData
+                }
+            )
 
 
-    } catch (error) {
-        console.error(error);
-        return res.json({
-            success: 0,
-            message: error.message,
-        });
-    }
+        } catch (error) {
+            console.error(error);
+            return res.json({
+                success: 0,
+                message: error.message,
+            });
+        }
     }
 }

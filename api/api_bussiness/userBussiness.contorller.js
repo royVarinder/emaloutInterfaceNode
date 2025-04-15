@@ -25,7 +25,7 @@ module.exports = {
             const { uuid } = body;
             // return;
             let filesUrls = []
-            if (files.length > 0) {
+            if (files?.length > 0) {
                 filesUrls = files.map((items) => {
                     return `/profile/${items.filename}`
                 })
@@ -142,6 +142,44 @@ module.exports = {
             return res.json(apiResponse(false, error.message, []))
         }
 
+    },
+    getBusinessByCategoryId: async (req, res) => {
+        try {
+            console.log('req.body :>> ', req.body);
+            const { categoryId } = req.body;
+            console.log('categoryId :>> ', categoryId);
+            if (categoryId) {
+                const businessData = await bussinessTable.findAll({
+                    where: { category_id: categoryId, status: 1 }
+                })
+                return res.json(apiResponse(true, 'Business fetched successfully!', businessData))
+            }
+            return res.json(apiResponse(false, "Category id is required!", {}))
+
+
+            // if (!!uuid) {
+            //     const businessData = await bussinessTable.findAll({
+            //         where: { ...req.body,  status: '1' }
+            //     })
+            //     const categoryIds = businessData.map((bus) => bus.category_id);
+            //     const categoryDetails = await categoryTable.findAll({
+            //         where: {
+            //             id: categoryIds,
+            //             status: "1"
+            //         }
+            //     });
+            //     const updateBusinessData = businessData.map((items) => {
+            //         const dataValues = items?.dataValues;
+            //         return { ...dataValues, categoryDetails: categoryDetails.find((cate) => cate.id == dataValues.category_id) }
+            //     })
+
+            //     return res.json(apiResponse(true, 'Business fetched successfully!', updateBusinessData))
+            // }
+        } catch (error) {
+            console.error(error);
+            return res.json(apiResponse(false, error.message, {}))
+
+        }
     },
 
 
