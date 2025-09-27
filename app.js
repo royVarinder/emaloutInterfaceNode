@@ -47,6 +47,7 @@ app.use("/api/users", loginUserRoutes);
 app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
 app.get("/api", (req, res)=>{
+    console.log('req.url :>> ', req.url);
     return res.json({
         returnCode : true,
         message : "API is working",
