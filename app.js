@@ -32,7 +32,7 @@ const upload = multer({
     storage : storage
 })
 // Connect to DB
-// connectDB().catch(console.error);
+connectDB().catch(console.error);
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
 app.use("/profile", express.static('upload/videos'));
