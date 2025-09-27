@@ -82,7 +82,7 @@ app.post("/uploadImages", upload.array('shopImages'), (req, res)=>{
 // sequelize.sync()
 getServerIP();
 // Sync all defined models to the DB
-app.listen(process.env.APP_PORT, "0.0.0.0", ()=>{
+app.listen(process.env.APP_PORT, '0.0.0.0', ()=>{
     console.log('Your app is running on port:', process.env.APP_PORT);
 });
 
