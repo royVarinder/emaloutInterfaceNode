@@ -15,6 +15,10 @@ let sequelize = new Sequelize(process.env.APP_DB, process.env.APP_USER_NAME, pro
 });
 const db = {}
 
+//associations
+
+
+
 fs
     .readdirSync(__dirname)
     .filter(file => {
@@ -24,8 +28,13 @@ fs
         const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
         db[model.name] = model;
     });
+Object.values(db).forEach((model) => {
+    if (model.associate) {
+        model.associate(db);
+    }
+});
 
-// sequelize.sync({alter:true})
+// sequelize.sync()
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

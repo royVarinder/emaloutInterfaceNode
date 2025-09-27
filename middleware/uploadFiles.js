@@ -1,18 +1,9 @@
 const multer = require('multer')
-const path = require('path')
 
-// Upload File Configuration
+// Upload File Configuration - Using memory storage instead of disk storage
 
-const storage = multer.diskStorage({
-    destination: 'upload/images',
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
-    }
-})
-
-const uploadFiles = multer({
-    storage: storage
-})
-
+const storage = multer.memoryStorage();
+//set the limit to 50mb
+const uploadFiles = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 
 module.exports = uploadFiles
