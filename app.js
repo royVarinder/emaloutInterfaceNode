@@ -46,7 +46,7 @@ app.use("/api/ngo", ngoRoutes);
 app.use("/api/users", loginUserRoutes);
 app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
-app.post("/api", (req, res)=>{
+app.get("/api", (req, res)=>{
     return res.json({
         returnCode : true,
         message : "API is working",
