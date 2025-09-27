@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const { default: axios } = require('axios');
 const nodemailer = require('nodemailer');
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -57,9 +58,21 @@ const emailSend = async (to, subject, text) => {
     }
 }
 
+const getServerIP = async () => {
+    try {
+        const res = await axios.get("http://checkip.amazonaws.com");
+        console.table(res.data);
+    } catch (error) {
+        console.error("Error in getServerIP", error?.message);
+    }
+
+
+        }
+
 module.exports = {
     apiResponse,
     uploadFile,
-    emailSend
+    emailSend,
+    getServerIP
 }
 

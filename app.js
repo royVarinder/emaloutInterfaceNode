@@ -23,6 +23,8 @@ const storage = multer.diskStorage({    //Multer for File Storage
 })
 const _newsRoutes = require("./api/api_news/news.Router");
 const channelRouter = require("./api/channel/channel.router");
+const { default: axios } = require("axios");
+const { getServerIP } = require("./util");
 
 const APP_NODE_URL = process.env.APP_NODE_URL;
 
@@ -78,11 +80,18 @@ app.post("/uploadImages", upload.array('shopImages'), (req, res)=>{
 })
 
 // sequelize.sync()
-
+getServerIP();
 // Sync all defined models to the DB
 app.listen(process.env.APP_PORT, "0.0.0.0", ()=>{
-    console.log('Your app is running on port:',process.env.APP_PORT);
+    console.log('Your app is running on port:', process.env.APP_PORT);
 });
+
+
+
+
+
+
+  
 // app.get("/", (req, res) => {
     
 //     console.log(__dirname)
