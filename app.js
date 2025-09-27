@@ -30,7 +30,7 @@ const upload = multer({
     storage : storage
 })
 // Connect to DB
-connectDB().catch(console.error);
+// connectDB().catch(console.error);
 app.use(express.json());
 app.use("/profile", express.static('upload/images'));
 app.use("/profile", express.static('upload/videos'));
@@ -46,8 +46,9 @@ app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
 app.post("/api", (req, res)=>{
     return res.json({
-        success : true, 
-        message : "API is working"
+        returnCode : true,
+        message : "API is working",
+        returnData : [], 
     })
 })
 //write a fucniton if api not found send 404 error
