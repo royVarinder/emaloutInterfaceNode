@@ -1,44 +1,15 @@
-const uploadFiles = require("../../middleware/uploadFiles");
-const {
-    createUserBussiness,
-    getUserBussiness,
-    getUserBussinessById,
-    //    updateUserBussiness,
-    // deleteBussinessById 
-    addNewsController,
-    updateNewsController,
-    updateNewsByIdController,
-    getNewsController,
-    deleteNewsByIdController,
-    updateNewsAnyKayByIdController,
-    fetchAllNewsController,
-    getBusinessByCategoryId
-} = require("./userBussiness.contorller");
 const router = require("express").Router();
+const { verifyToken } = require("../../Config/Util");
+const uploadFiles = require("../../middleware/uploadFiles");
+const businessController = require("./userBussiness.contorller");
 
 
-const userBussinessesCalling = () => {
-    try {
-        //METHODS FOR ADMIN USER =====>
-        router.post("/createUpdateBusiness", uploadFiles.array("shopImages"), createUserBussiness);
-        // router.get("/", getUserBussiness);
-        router.post("/fetchBusiness", getUserBussiness);
-        router.post("/getBusinessByCategoryId", getBusinessByCategoryId);
-        router.get("/:id", getUserBussinessById);
-        // router.post("/addNews", addNewsController);
-        // router.post("/updateNews", updateNewsController);
-        // router.post("/fetchAllNews", fetchAllNewsController);
-        // router.post("/addNews/:id", updateNewsByIdController);
-        router.post("/fetchAllNews", getNewsController);
-        router.post("/deleteNews/:id", deleteNewsByIdController);
-        router.post("/updateNewsAnyKayById/:id", updateNewsAnyKayByIdController);
-        // router.patch("/", updateUserBussiness);
-        // router.delete("/:id", deleteBussinessById);
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-userBussinessesCalling();
+router.post("/createUpdateCategory", businessController.createUpdateCategory);
+router.post("/createUpdateBusiness", uploadFiles.array("files"), businessController.createUpdateBusiness);
+router.post("/getBusiness", businessController.getBusiness); //get business by category id
+router.post("/getCategories", businessController.getCategories);
+
 
 module.exports = router;
+

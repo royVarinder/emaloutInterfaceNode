@@ -65,6 +65,7 @@ module.exports = {
     },
     createNews: async (req, res) => {
         try {
+            console.log('req.files :>> ', req.files);
             if (req.files.length > 0) {
                 const fileData = await uploadFile(req.files, "news");
                 req.body.files = fileData;

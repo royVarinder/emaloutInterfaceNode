@@ -54,7 +54,6 @@ module.exports = {
             req.body['uuid'] = uuidv4();
             let files = uuidv4();
             let filesArray = [];
-            console.log('req.body :>> ', req.body);
             if (req.files.length > 0) {
                 const uploadPromises = req?.files?.map((file) => {
                     return cloudinary.uploader.upload(file.path, {
