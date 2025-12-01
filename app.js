@@ -46,14 +46,7 @@ app.use("/api/ngo", ngoRoutes);
 app.use("/api/users", loginUserRoutes);
 app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
-app.get("/api", (req, res)=>{
-    console.log('req.url :>> ', req.url);
-    return res.json({
-        returnCode : true,
-        message : "API is working",
-        returnData : [], 
-    })
-})
+
 //write a fucniton if api not found send 404 error
 app.use((req, res, next) => {
     console.log('req.url :>> ', req.url);

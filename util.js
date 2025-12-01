@@ -45,7 +45,7 @@ const emailSend = async (to, subject, text) => {
             }
         })
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: "Emalout <info@emalout.com>",
             to,
             subject,
             text
@@ -65,14 +65,19 @@ const getServerIP = async () => {
     } catch (error) {
         console.error("Error in getServerIP", error?.message);
     }
+}
 
-
-        }
+const generatePassword = () => {
+    //generate password with 8 characters contain uppercase, lowercase, numbers and special characters
+    const password = Math.random().toString(36).substring(2, 10);
+    return password;
+}
 
 module.exports = {
     apiResponse,
     uploadFile,
     emailSend,
-    getServerIP
+    getServerIP,
+    generatePassword
 }
 

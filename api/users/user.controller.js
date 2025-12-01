@@ -7,10 +7,11 @@ const md5 = require("md5");
 const emChannel = require("../../models").em_channel;
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-const { emailSend } = require("../../util");
+const { emailSend, generatePassword } = require("../../util");
 const userModel = require("../../mongoModels/users");
 const { generateToken } = require("../../Config/Util");
 const sessionModel = require("../../mongoModels/session");
+const adminUsersModel = require("../../mongoModels/adminUsers");
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -182,7 +183,13 @@ module.exports = {
                 expiredAt: dayjs().add(7, 'day').toDate(),
             });
             await session.save();
-            return res.status(200).json(apiResponse(true, "Login successful", { id: user._id, name: user.name, phone: user.phone, token }));
+            return res.status(200).json(apiResponse(true, "Login successful",
+                {
+                    id: user._id,
+                    name: user.name,
+                    phone: user.phone,
+                    token
+                }));
         } catch (err) {
             console.error(err);
             return res.status(500).json(apiResponse(false, "Server error", []));
@@ -216,12 +223,62 @@ module.exports = {
     },
     registerAdmin: async (req, res) => {
         try {
+            const { name, phone, email, role } = req.body;
+            const generatedPassword = generatePassword();
+            const admin = new adminUsersModel({ name, phone, email, password: md5(generatedPassword) });
+            await admin.save();
+            await emailSend(email, "Admin registered successfully", `Your password is ${generatedPassword}`);
+            return res.status(200).json(apiResponse(true, "Admin registered successfully", {
+                name,
+                phone,
+                email,
+                role,
+                password: generatedPassword
+            }));
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(apiResponse(false, error.message, []));
+        }
+    },
+    loginAdmin: async (req, res) => {
+        try {
             const { email, password } = req.body;
-            const admin = await adminUserTable.create({ email, password });
-            return res.status(200).json(apiResponse(true, "Admin registered successfully", admin));
+            const admin = await adminUsersModel.findOne({ email, password });
+            if (!admin) {
+                return res.status(400).json(apiResponse(false, "Invalid email or password", []));
+            }
+            const token = generateToken({ id: admin._id, name: admin.name, email: admin.email }, '7d');
+            const session = new sessionModel({
+                admin: admin._id,
+                token,
+                expiredAt: dayjs().add(7, 'day').toDate(),
+            });
+            await session.save();
+            await emailSend(email, "Admin login successful", `You just logged in to your account with this credentials: Email: ${email}`);
+            return res.status(200).json(apiResponse(true, "Admin login successful", { admin, token, expiresAt: dayjs().add(7, 'day').toDate() }));
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(apiResponse(false, error.message, []));
+        }
+    }, 
+    logoutAdmin: async (req, res) => {
+        try {
+            const { token } = req.headers;
+            if (!token) {
+                return res.status(400).json(apiResponse(false, "Token is required", []));
+            }
+            const session = await sessionModel.findOne({ token: req.headers.token });
+            if (!session) {
+                return res.status(400).json(apiResponse(false, "Session not found", []));
+            }
+            await sessionModel.deleteOne({ _id: session._id });
+            // await emailSend(admin.email, "Admin logged out successfully", `You just logged out of your account`);
+            return res.status(200).json(apiResponse(true, "Admin logged out successfully"));
         } catch (error) {
             console.error(error);
             return res.status(500).json(apiResponse(false, error.message, []));
         }
     }
+
 }
