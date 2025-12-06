@@ -158,6 +158,7 @@ module.exports = {
     },
     registerUser: async (req, res) => {
         const { phone, name } = req.body;
+        const userType = "user";
 
         if (!phone || !name) {
             return res.status(400).apiResponse(false, "Phone and Name are required", []);
@@ -175,7 +176,7 @@ module.exports = {
 
             // Generate JWT
             //expire token in 1 minutes
-            const token = generateToken({ id: user._id, name: user.name, phone: user.phone }, '7d');
+            const token = generateToken({ id: user._id, name: user.name, phone: user.phone, userType }, '7d');
             //save in session
             let expiredAt = dayjs().add(7, 'day').toDate();
             const session = new sessionModel({
@@ -245,11 +246,12 @@ module.exports = {
     loginAdmin: async (req, res) => {
         try {
             const { email, password } = req.body;
+            const userType = "admin";
             const admin = await adminUsersModel.findOne({ email, password });
             if (!admin) {
                 return res.status(400).json(apiResponse(false, "Invalid email or password", []));
             }
-            const token = generateToken({ id: admin._id, name: admin.name, email: admin.email }, '7d');
+            const token = generateToken({ id: admin._id, name: admin.name, email: admin.email, userType }, '7d');
             const session = new sessionModel({
                 admin: admin._id,
                 token,
@@ -286,6 +288,7 @@ module.exports = {
     sessionExpireCheck: async (req, res) => {
         try {
             const token = req.headers.token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const session = await sessionModel.findOne({ token: token });
             const isExpired = dayjs().isAfter(dayjs(session.expiredAt));
             if (!session) {
@@ -298,6 +301,9 @@ module.exports = {
                 return res.json({
                     returnCode: true,
                     message: "Your session is still valid.",
+                    data : [{
+                        userType : decoded.userType,
+                    }]
                 })
             }
             if (isExpired) {
