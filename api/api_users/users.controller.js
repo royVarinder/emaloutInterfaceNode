@@ -81,7 +81,7 @@ module.exports = {
             const { uuid } = req.body;
 
             if (!!uuid) {
-                const findNews = await categoryTable.findOne({ where: { uuid, status : 1 } });
+                const findNews = await categoryTable.findOne({ where: { uuid, status: 1 } });
 
                 if (findNews) {
                     return res.json({

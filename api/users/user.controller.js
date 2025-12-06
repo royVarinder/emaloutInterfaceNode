@@ -177,10 +177,11 @@ module.exports = {
             //expire token in 1 minutes
             const token = generateToken({ id: user._id, name: user.name, phone: user.phone }, '7d');
             //save in session
+            let expiredAt = dayjs().add(7, 'day').toDate();
             const session = new sessionModel({
                 user: user._id,
                 token,
-                expiredAt: dayjs().add(7, 'day').toDate(),
+                expiredAt,
             });
             await session.save();
             return res.status(200).json(apiResponse(true, "Login successful",
@@ -261,7 +262,7 @@ module.exports = {
             console.error(error);
             return res.status(500).json(apiResponse(false, error.message, []));
         }
-    }, 
+    },
     logoutAdmin: async (req, res) => {
         try {
             const { token } = req.headers;
@@ -278,6 +279,41 @@ module.exports = {
         } catch (error) {
             console.error(error);
             return res.status(500).json(apiResponse(false, error.message, []));
+        }
+    },
+
+
+    sessionExpireCheck: async (req, res) => {
+        try {
+            const token = req.headers.token
+            const session = await sessionModel.findOne({ token: token });
+            const isExpired = dayjs().isAfter(dayjs(session.expiredAt));
+            if (!session) {
+                return res.json({
+                    returnCode: false,
+                    message: "Session not found. Please login to continue.",
+                })
+            }
+            if (!isExpired) {
+                return res.json({
+                    returnCode: true,
+                    message: "Your session is still valid.",
+                })
+            }
+            if (isExpired) {
+                await sessionModel.deleteOne({ _id: session._id });
+                return res.json({
+                    returnCode: true,
+                    message: "Your session has been expired. Please login again to continue.",
+                })
+            }
+        }
+        catch (error) {
+            console.error(error);
+            res.json({
+                returnCode: false,
+                message: error.message,
+            })
         }
     }
 

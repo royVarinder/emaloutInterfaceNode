@@ -16,6 +16,7 @@ const userRouter = () => {
         router.post("/register-admin", userController.registerAdmin);
         router.post("/login-admin", userController.loginAdmin);
         router.post("/logout-admin", userController.logoutAdmin);
+        router.post ("/sessionCheck", userController.sessionExpireCheck);
     } catch (error) {
         console.error(error);
     }
