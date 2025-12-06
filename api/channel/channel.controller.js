@@ -65,11 +65,11 @@ module.exports = {
     },
     createNews: async (req, res) => {
         try {
-            console.log('req.files :>> ', req.files);
             if (req.files.length > 0) {
                 const fileData = await uploadFile(req.files, "news");
                 req.body.files = fileData;
             }
+            console.log('req.body :>> ', req.body);
             const news = await newsModel.create(req.body);
             return res.status(200).json(apiResponse(true, "News created successfully", news));
         } catch (error) {
@@ -98,19 +98,20 @@ module.exports = {
     },
     getNews: async (req, res) => {
         try {
+            //get data sort by createdAt descending
             if (req?.body?.news_id) {
-                const news = await newsModel.find({ _id: req?.body?.news_id, status: 1 });
+                const news = await newsModel.find({ _id: req?.body?.news_id, status: 1 }).populate('user').populate('channel').sort({ createdAt: -1 });
                 return res.status(200).json(apiResponse(true, "News fetched successfully", news));
             }
             if (req?.body?.channel) {
-                const news = await newsModel.find({ channel: req?.body?.channel, status: 1 });
+                const news = await newsModel.find({ channel: req?.body?.channel, status: 1 }).populate('user').populate('channel').sort({ createdAt: -1 });
                 return res.status(200).json(apiResponse(true, "News fetched successfully", news));
             }
             if (req?.body?.user) {
-                const news = await newsModel.find({ user: req?.body?.user, status: 1 });
+                const news = await newsModel.find({ user: req?.body?.user, status: 1 }).populate('user').populate('channel').sort({ createdAt: -1 });
                 return res.status(200).json(apiResponse(true, "News fetched successfully", news));
             }
-            const news = await newsModel.find({ status: 1 });
+            const news = await newsModel.find({ status: 1 }).populate('user').populate('channel').sort({ createdAt: -1 })   ;
             return res.status(200).json(apiResponse(true, "News fetched successfully", news));
         } catch (error) {
             console.error(error);
