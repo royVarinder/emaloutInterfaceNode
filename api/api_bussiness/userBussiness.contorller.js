@@ -6,7 +6,6 @@ const Business = require("../../mongoModels/bussiness");
 module.exports = {
     createUpdateCategory: async (req, res) => {
         try {
-            console.log('req?.body :>> ', req?.body);
             const { id } = req?.body;
             if (!!id) {
                 //check if category name is already exists
@@ -33,7 +32,6 @@ module.exports = {
     createUpdateBusiness: async (req, res) => {
         try {
             if (req?.body?.id) {
-                console.log('req.files :>> ', req.files);
                 const existingImages = await Business.findById(req.body.id);
                 if (req.files?.length > 0) {
                     //append in the existing images
@@ -78,6 +76,10 @@ module.exports = {
     },
     getBusiness: async (req, res) => {
         try {
+            console.log('req.body :>> ', req.body);
+            const page = parseInt(req.body.page) || 1;
+            const limit = parseInt(req.body.limit) || 10;
+            const skip = (page - 1) * limit;
             let where = {};
             if (req?.body?.id) {
                 where = { _id: req?.body?.id };
@@ -85,12 +87,16 @@ module.exports = {
             if (req?.body?.category_id) {
                 where = { category_id: req?.body?.category_id };
             }
-            if (Object.keys(where).length > 0) {
-                const business = await Business.findById({ ...where, status: 1 }).populate("category_id"); //fetch category details with populate
-                return res.json(apiResponse(true, "Business fetched successfully", business));
-            }
-            const business = await Business.find({ status: 1 }).populate("category_id"); //fetch business details with populate
+            // if (Object.keys(where).length > 0) {
+            const business = await Business
+                .find({ ...where, status: 1 })
+                .populate("category_id")
+                .skip(skip)
+                .limit(limit); //fetch category details with populate
             return res.json(apiResponse(true, "Business fetched successfully", business));
+            // }
+            // const business = await Business.find({ status: 1 }).populate("category_id"); //fetch business details with populate
+            // return res.json(apiResponse(true, "Business fetched successfully", business));
         } catch (error) {
             console.error(error);
             return res.json(apiResponse(false, error.message, []));

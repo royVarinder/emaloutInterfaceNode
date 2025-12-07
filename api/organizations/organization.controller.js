@@ -99,20 +99,44 @@ module.exports = {
     },
     getOrgEvent: async (req, res) => {
         try {
+            const page = parseInt(req.body.page) || 1;
+            const limit = parseInt(req.body.limit) || 10;
+            const skip = (page - 1) * limit;
+
+            let query = { status: 1 };
+
             if (req.body.org_id) {
-                const event = await organizationEventsModel.find({ organization: req.body.org_id, status: 1 }).populate('organization');
-                return res.status(200).json(apiResponse(true, "Organization event fetched successfully", event));
+                query = { organization: req.body.org_id, status: 1 };
+            } else if (req.body.event_id) {
+                query = { _id: req.body.event_id, status: 1 };
             }
-            if (req.body.event_id) {
-                //fetch orgnization details
-                const event = await organizationEventsModel.findOne({ _id: req.body.event_id, status: 1 }).populate('organization');
-                return res.status(200).json(apiResponse(true, "Organization event fetched successfully", event));
-            }
-            const event = await organizationEventsModel.find({ status: 1 }).populate('organization');
-            return res.status(200).json(apiResponse(true, "Organization event fetched successfully", event));
+
+            const total = await organizationEventsModel.countDocuments(query);
+
+            const events = await organizationEventsModel
+                .find(query)
+                .populate('organization')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
+
+            return res.status(200).json({
+                returnCode: true,
+                message: "Organization event fetched successfully",
+                returnData: events,   // <-- DIRECT ARRAY
+                page: page,
+                totalPages: Math.ceil(total / limit)
+            });
+
         } catch (error) {
             console.error('Organization event fetch error:', error);
-            return res.status(500).json(apiResponse(false, error.message, []));
+            return res.status(500).json({
+                success: false,
+                message: error.message,
+                returndata: []
+            });
         }
     }
+
+
 }
