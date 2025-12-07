@@ -98,23 +98,37 @@ module.exports = {
     },
     getNews: async (req, res) => {
         try {
+            const page = parseInt(req.body.page) || 1;
+            const limit = parseInt(req.body.limit) || 10;
+            const skip = (page - 1) * limit;
+    
+            let query = { status: 1 };
+    
             if (req?.body?.news_id) {
-                const news = await newsModel.find({ _id: req?.body?.news_id, status: 1 });
-                return res.status(200).json(apiResponse(true, "News fetched successfully", news));
+                query = { _id: req?.body?.news_id, status: 1 };
+            } else if (req?.body?.channel) {
+                query = { channel: req?.body?.channel, status: 1 };
+            } else if (req?.body?.user) {
+                query = { user: req?.body?.user, status: 1 };
             }
-            if (req?.body?.channel) {
-                const news = await newsModel.find({ channel: req?.body?.channel, status: 1 });
-                return res.status(200).json(apiResponse(true, "News fetched successfully", news));
-            }
-            if (req?.body?.user) {
-                const news = await newsModel.find({ user: req?.body?.user, status: 1 });
-                return res.status(200).json(apiResponse(true, "News fetched successfully", news));
-            }
-            const news = await newsModel.find({ status: 1 });
-            return res.status(200).json(apiResponse(true, "News fetched successfully", news));
+    
+            const news = await newsModel
+                .find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
+            return res.status(200).json(
+                apiResponse(true, "News fetched successfully", news)
+            );
+    
         } catch (error) {
             console.error(error);
-            return res.status(500).json(apiResponse(false, error.message, []));
+            return res.status(500).json(
+                apiResponse(false, error.message, { returndata: [] })
+            );
         }
     }
-}
+    
+
+    
+} 

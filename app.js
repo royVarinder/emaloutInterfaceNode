@@ -46,6 +46,8 @@ app.use("/api/ngo", ngoRoutes);
 app.use("/api/users", loginUserRoutes);
 app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 //write a fucniton if api not found send 404 error
 app.use((req, res, next) => {

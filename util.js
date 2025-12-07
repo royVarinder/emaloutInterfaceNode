@@ -27,7 +27,8 @@ const uploadFile = async (files, folderName) => {
             const result = await cloudinary.uploader.upload(dataURI, {
                 folder: folderName,
             });
-            return result.url;
+            console.log('result :>> ', result);
+            return result.secure_url;
         }));
         return result;
     } catch (error) {
