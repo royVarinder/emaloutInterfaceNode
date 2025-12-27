@@ -19,7 +19,7 @@ const newsSchema = new Schema({
     files: Array,
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "AdminUsers",
+        ref: "Users",
         required: true
     },
     disable : { type: Number, default: 0 },
