@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const adminUsersSchema = new Schema({
-    name : String,
+    name: String,
     phone: String,
     email: String,
     password: String,
@@ -14,6 +14,14 @@ const adminUsersSchema = new Schema({
     role: {
         type: String,
         default: null //admin, superadmin, channel, organization
+    },
+    channelDetails: {
+        type: Object,
+        default: null
+    },
+    organizationDetails: {
+        type: Object,
+        default: null
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

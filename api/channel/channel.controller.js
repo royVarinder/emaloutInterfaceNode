@@ -79,16 +79,20 @@ module.exports = {
     },
     updateNews: async (req, res) => {
         try {
+            const deletedImages = req?.body?.deletedImages?.split(",");
             if (!req?.body?.news_id) {
                 return res.status(400).json(apiResponse(false, "News id is required", []));
             }
+            let remainingFiles = [];
             const existingFiles = await newsModel.findById(req?.body?.news_id);
+            if (deletedImages?.length > 0) {
+                remainingFiles = existingFiles?.files?.filter(file => !deletedImages.includes(file));
+                req.body.files = remainingFiles;
+            }
             if (req?.files?.length > 0) {
                 const fileData = await uploadFile(req?.files, "news");
-                req.body.files = fileData;
-                req.body.files = [...existingFiles?.files, ...fileData];
+                req.body.files = [...remainingFiles, ...fileData];
             }
-            console.log('req.body :>> ', req.body);
             const news = await newsModel.findByIdAndUpdate(req?.body?.news_id, req?.body, { new: true });
             return res.status(200).json(apiResponse(true, "News updated successfully", news));
         } catch (error) {
@@ -98,29 +102,38 @@ module.exports = {
     },
     getNews: async (req, res) => {
         try {
+            console.log('req?.body :>> ', req?.body);
             const page = parseInt(req.body.page) || 1;
             const limit = parseInt(req.body.limit) || 10;
             const skip = (page - 1) * limit;
-    
-            let query = { status: 1 };
-    
+            let query = {};
+           
             if (req?.body?.news_id) {
-                query = { _id: req?.body?.news_id, status: 1 };
-            } else if (req?.body?.channel) {
-                query = { channel: req?.body?.channel, status: 1 };
-            } else if (req?.body?.user) {
-                query = { user: req?.body?.user, status: 1 };
+                query = { _id: req?.body?.news_id };
+            } 
+            if (req?.body?.channel_id) {
+                query = { channel: req?.body?.channel_id };
+            } 
+            if (req?.body?.user) {
+                query = { user: req?.body?.user };
             }
-    
-            const news = await newsModel
+            if (req.body.admin) {
+                query = { ...query, status: 1 };
+            } else {
+                query = { ...query, status: 1, disable: 0 };
+            }
+            console.log('query :>> ', query);
+            let news = await newsModel
                 .find(query)
+                .populate('channel')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit);
+
             return res.status(200).json(
                 apiResponse(true, "News fetched successfully", news)
             );
-    
+
         } catch (error) {
             console.error(error);
             return res.status(500).json(
@@ -128,7 +141,7 @@ module.exports = {
             );
         }
     }
-    
 
-    
+
+
 } 

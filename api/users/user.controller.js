@@ -12,6 +12,8 @@ const userModel = require("../../mongoModels/users");
 const { generateToken } = require("../../Config/Util");
 const sessionModel = require("../../mongoModels/session");
 const adminUsersModel = require("../../mongoModels/adminUsers");
+const channelModel = require("../../mongoModels/channel");
+const organizationModel = require("../../mongoModels/organization");
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -225,9 +227,33 @@ module.exports = {
     },
     registerAdmin: async (req, res) => {
         try {
-            const { name, phone, email, role } = req.body;
+            console.log('req.body :>> ', req.body);
+            const { name, phone, email, role, channel_id, organization_id } = req.body;
             const generatedPassword = generatePassword();
-            const admin = new adminUsersModel({ name, phone, email, password: md5(generatedPassword) });
+            // const generatedPassword = "123456"
+            let response = {}
+            // if (!channel_id || !organization_id) {
+            //     return res.status(400).json(apiResponse(false, "Channel or organization is required", []));
+            // }
+            if (channel_id) {
+                const channel = await channelModel.findOne({ _id: channel_id });
+                if (!channel) {
+                    return res.status(400).json(apiResponse(false, "Channel not found", []));
+                }
+                response.role = "channel";
+                response.channel = channel;
+            }
+
+            if (organization_id) {
+                const organization = await organizationModel.findOne({ _id: organization_id });
+                if (!organization) {
+                    return res.status(400).json(apiResponse(false, "Organization not found", []));
+                }
+                response.role = "organization";
+                response.organization = organization;
+            }
+            console.log('response :>> ', response);
+            const admin = new adminUsersModel({ name, phone, email, role, password: md5(generatedPassword), channelDetails: response?.channel || null, organizationDetails: response?.organization || null });
             await admin.save();
             await emailSend(email, "Admin registered successfully", `Your password is ${generatedPassword}`);
             return res.status(200).json(apiResponse(true, "Admin registered successfully", {
@@ -235,7 +261,9 @@ module.exports = {
                 phone,
                 email,
                 role,
-                password: generatedPassword
+                password: generatedPassword,
+                channelDetails: response?.channel || null,
+                organizationDetails: response?.organization || null
             }));
 
         } catch (error) {
@@ -245,6 +273,7 @@ module.exports = {
     },
     loginAdmin: async (req, res) => {
         try {
+            console.log('req.body :>> ', req.body);
             const { email, password } = req.body;
             const userType = "admin";
             const admin = await adminUsersModel.findOne({ email, password });
@@ -301,8 +330,8 @@ module.exports = {
                 return res.json({
                     returnCode: true,
                     message: "Your session is still valid.",
-                    data : [{
-                        userType : decoded.userType,
+                    data: [{
+                        userType: decoded.userType,
                     }]
                 })
             }

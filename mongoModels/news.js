@@ -22,6 +22,7 @@ const newsSchema = new Schema({
         ref: "Users",
         required: true
     },
+    disable : { type: Number, default: 0 },
     status: { type: Number, default: 1 },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
