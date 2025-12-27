@@ -18,16 +18,16 @@ module.exports = {
         try {
             const session = await sessionModel.findOne({ token: req.headers.token });
             if (!session) {
-                return res.status(401).json(apiResponse(false, "Token not found", []));
+                return res.status(401).json(apiResponse(false, "Invalid token.", []));
             }
             if (dayjs().isAfter(dayjs(session.expiredAt))) {
-                return res.status(401).json(apiResponse(false, "Token expired", []));
+                return res.status(401).json(apiResponse(false, "Your session has been expired. Please login again to continue.", []));
             }
             req.user = session.user;
             return next();
         } catch (error) {
             console.log(error);
-            return res.status(401).json(apiResponse(false, 'Invalid token', []));
+            return res.status(401).json(apiResponse(false, 'Please login again to continue.', []));
         }
 
     }

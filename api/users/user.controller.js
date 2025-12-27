@@ -277,6 +277,7 @@ module.exports = {
             const { email, password } = req.body;
             const userType = "admin";
             const admin = await adminUsersModel.findOne({ email, password });
+            admin.role = userType;
             if (!admin) {
                 return res.status(400).json(apiResponse(false, "Invalid email or password", []));
             }
@@ -316,7 +317,7 @@ module.exports = {
 
     sessionExpireCheck: async (req, res) => {
         try {
-            const token = req.headers.token
+            const token = req.headers.token;
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const session = await sessionModel.findOne({ token: token });
             const isExpired = dayjs().isAfter(dayjs(session.expiredAt));
