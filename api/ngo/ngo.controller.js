@@ -1,4 +1,4 @@
-const { apiResponse, uploadFile } = require("../../util");
+const { apiResponse, uploadFileToS3 } = require("../../util");
 const models = require("../../models");
 
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
     addNGOEvent: async (req, res) => {
         try {
             if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, 'ngo_events');
+                const fileData = await uploadFileToS3(req.files, 'ngo_events');
                 const event_image = fileData.map(file => file.url).join(',');
                 req.body.event_image = event_image;
             }

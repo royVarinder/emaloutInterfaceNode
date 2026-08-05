@@ -5,6 +5,7 @@ const app = express();                  //Web framework for Node.js.
 const connectDB = require("./Config/mongodbconnection");
 
 const multer = require("multer");       //Middleware for handling file uploads.
+const uploadFiles = require("./middleware/uploadFiles");
 const path = require("path");           //working with file and directory paths.
 const userRouter = require("./api/api_adminUsers/adminUser.Router"); //handling  API routes. 
 const userBussRouter = require("./api/api_bussiness/userBussiness.Router");
@@ -25,7 +26,7 @@ const storage = multer.diskStorage({    //Multer for File Storage
 const _newsRoutes = require("./api/api_news/news.Router");
 const channelRouter = require("./api/channel/channel.router");
 const { default: axios } = require("axios");
-const { getServerIP } = require("./util");
+const { getServerIP, apiResponse } = require("./util");
 
 const APP_NODE_URL = process.env.APP_NODE_URL;
 
@@ -76,6 +77,22 @@ app.post("/uploadImages", upload.array('shopImages'), (req, res)=>{
         })
     }
 })
+
+// Catch multer/upload errors (e.g. disallowed file type, size limit) as JSON
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        console.error('Multer upload error :>> ', err);
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json(apiResponse(false, `File too large. Maximum allowed size is ${uploadFiles.MAX_FILE_SIZE_MB}MB.`, []));
+        }
+        return res.status(400).json(apiResponse(false, err.message, []));
+    }
+    if (err) {
+        console.error(err);
+        return res.status(400).json(apiResponse(false, err.message, []));
+    }
+    next();
+});
 
 // sequelize.sync()
 getServerIP();

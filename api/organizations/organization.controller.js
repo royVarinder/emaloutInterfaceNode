@@ -1,5 +1,5 @@
 const organizationModel = require("../../mongoModels/organization");
-const { apiResponse, uploadFile, emailSend } = require("../../util");
+const { apiResponse, uploadFileToS3, emailSend } = require("../../util");
 const organizationEventsModel = require("../../mongoModels/orgevents");
 const md5 = require("md5");
 
@@ -11,7 +11,7 @@ module.exports = {
                 return res.status(500).json(apiResponse(false, "Database not connected", []));
             }
             if (req?.files?.length > 0) {
-                const fileData = await uploadFile(req?.files, "organization");
+                const fileData = await uploadFileToS3(req?.files, "organization");
                 req.body.logo = fileData[0];
             }
             const password = Math.random().toString(36).substring(2, 10);
@@ -59,7 +59,7 @@ module.exports = {
     },
     updateOrgLogo: async (req, res) => {
         try {
-            const logo = await uploadFile(req.files, "organization");
+            const logo = await uploadFileToS3(req.files, "organization");
             //resolev is promise resolve and
             const organization = await organizationModel.findByIdAndUpdate(req.body.org_id, { logo: logo[0] }, { new: true });
             return res.status(200).json(apiResponse(true, "Organization logo updated successfully", organization));
@@ -72,7 +72,7 @@ module.exports = {
         try {
             console.log('addOrgEvent :>> ', req.body);
             if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, "organization_events");
+                const fileData = await uploadFileToS3(req.files, "organization_events");
                 req.body.event_image = fileData[0];
             }
             const event = await organizationEventsModel.create(req.body);
@@ -89,7 +89,7 @@ module.exports = {
                 return res.status(400).json(apiResponse(false, "Event id is required", []));
             }
             if (req?.files?.length > 0) {
-                const fileData = await uploadFile(req?.files, "organization_events");
+                const fileData = await uploadFileToS3(req?.files, "organization_events");
                 req.body.event_image = fileData[0];
             }
             const event = await organizationEventsModel.findByIdAndUpdate(req?.body?.event_id, req?.body, { new: true });

@@ -1,14 +1,14 @@
 const md5 = require("md5");
 const channelModel = require("../../mongoModels/channel");
 const newsModel = require("../../mongoModels/news");
-const { apiResponse, uploadFile, emailSend } = require("../../util");
+const { apiResponse, uploadFileToS3, emailSend } = require("../../util");
 
 module.exports = {
 
     createChannel: async (req, res) => {
         try {
             if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, "channels");
+                const fileData = await uploadFileToS3(req.files, "channels");
                 req.body.logo = fileData[0];
             }
             //genrate a random password without uuid
@@ -34,7 +34,7 @@ module.exports = {
         try {
             if (req?.body?.channel_id) {
                 if (req?.files?.length > 0) {
-                    const fileData = await uploadFile(req?.files, "channels");
+                    const fileData = await uploadFileToS3(req?.files, "channels");
                     req.body.logo = fileData[0];
                 }
                 await channelModel.findByIdAndUpdate(req?.body?.channel_id, req?.body, { new: true });
@@ -65,14 +65,18 @@ module.exports = {
     },
     createNews: async (req, res) => {
         try {
+            console.log('createNews req.body :>> ', req.body);
+            console.log('createNews req.files :>> ', req.files?.map(f => ({ fieldname: f.fieldname, originalname: f.originalname, mimetype: f.mimetype, size: f.size })));
             if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, "news");
+                const fileData = await uploadFileToS3(req.files, "news");
+                console.log('createNews uploaded fileData :>> ', fileData);
                 req.body.files = fileData;
             }
             const news = await newsModel.create(req.body);
+            console.log('createNews created news :>> ', news);
             return res.status(200).json(apiResponse(true, "News created successfully", news));
         } catch (error) {
-            console.error(error);
+            console.error('createNews error :>> ', error);
             return res.status(500).json(apiResponse(false, error.message, []));
         }
     },
@@ -89,7 +93,7 @@ module.exports = {
                 req.body.files = remainingFiles;
             }
             if (req?.files?.length > 0) {
-                const fileData = await uploadFile(req?.files, "news");
+                const fileData = await uploadFileToS3(req?.files, "news");
                 req.body.files = [...remainingFiles, ...fileData];
             }
             const news = await newsModel.findByIdAndUpdate(req?.body?.news_id, req?.body, { new: true });

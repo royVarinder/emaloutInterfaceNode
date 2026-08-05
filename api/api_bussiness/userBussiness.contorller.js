@@ -1,5 +1,5 @@
 const Category = require("../../mongoModels/category");
-const { apiResponse, uploadFile } = require("../../util");
+const { apiResponse, uploadFileToS3 } = require("../../util");
 const { v4: uuidv4 } = require('uuid');
 const Business = require("../../mongoModels/bussiness");
 
@@ -35,7 +35,7 @@ module.exports = {
                 const existingImages = await Business.findById(req.body.id);
                 if (req.files?.length > 0) {
                     //append in the existing images
-                    const fileData = await uploadFile(req.files, "business");
+                    const fileData = await uploadFileToS3(req.files, "business");
                     if (fileData?.length > 0) {
                         const newImages = fileData?.map((items) => {
                             return {
@@ -57,7 +57,7 @@ module.exports = {
                 return res.json(apiResponse(true, "Business updated successfully", updatedRow));
             }
             if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, "business");
+                const fileData = await uploadFileToS3(req.files, "business");
                 if (fileData?.length > 0) {
                     req.body.images = fileData?.map((items) => {
                         return {
