@@ -227,7 +227,6 @@ module.exports = {
     },
     registerAdmin: async (req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const { name, phone, email, role, channel_id, organization_id } = req.body;
             const generatedPassword = generatePassword();
             // const generatedPassword = "123456"
@@ -273,10 +272,10 @@ module.exports = {
     },
     loginAdmin: async (req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const { email, password } = req.body;
             const userType = "admin";
             const admin = await adminUsersModel.findOne({ email, password });
+            // admin.role = admin?;
             if (!admin) {
                 return res.status(400).json(apiResponse(false, "Invalid email or password", []));
             }
@@ -316,7 +315,7 @@ module.exports = {
 
     sessionExpireCheck: async (req, res) => {
         try {
-            const token = req.headers.token
+            const token = req.headers.token;
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const session = await sessionModel.findOne({ token: token });
             const isExpired = dayjs().isAfter(dayjs(session.expiredAt));

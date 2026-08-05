@@ -69,7 +69,6 @@ module.exports = {
                 const fileData = await uploadFile(req.files, "news");
                 req.body.files = fileData;
             }
-            console.log('req.body :>> ', req.body);
             const news = await newsModel.create(req.body);
             return res.status(200).json(apiResponse(true, "News created successfully", news));
         } catch (error) {

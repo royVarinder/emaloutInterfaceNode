@@ -76,7 +76,6 @@ module.exports = {
     },
     getBusiness: async (req, res) => {
         try {
-            console.log('req.body :>> ', req.body);
             const page = parseInt(req.body.page) || 1;
             const limit = parseInt(req.body.limit) || 10;
             const skip = (page - 1) * limit;

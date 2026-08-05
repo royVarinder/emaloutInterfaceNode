@@ -70,6 +70,7 @@ module.exports = {
     },
     addOrgEvent: async (req, res) => {
         try {
+            console.log('addOrgEvent :>> ', req.body);
             if (req.files.length > 0) {
                 const fileData = await uploadFile(req.files, "organization_events");
                 req.body.event_image = fileData[0];
@@ -83,14 +84,15 @@ module.exports = {
     },
     updateOrgEvent: async (req, res) => {
         try {
-            if (!req.body.event_id) {
+            console.log('updateOrgEvent :>> ', req.body);
+            if (!req?.body?.event_id) {
                 return res.status(400).json(apiResponse(false, "Event id is required", []));
             }
-            if (req.files.length > 0) {
-                const fileData = await uploadFile(req.files, "organization_events");
+            if (req?.files?.length > 0) {
+                const fileData = await uploadFile(req?.files, "organization_events");
                 req.body.event_image = fileData[0];
             }
-            const event = await organizationEventsModel.findByIdAndUpdate(req.body.event_id, req.body, { new: true });
+            const event = await organizationEventsModel.findByIdAndUpdate(req?.body?.event_id, req?.body, { new: true });
             return res.status(200).json(apiResponse(true, "Organization event updated successfully", event));
         } catch (error) {
             console.error('Organization event update error:', error);
@@ -99,6 +101,7 @@ module.exports = {
     },
     getOrgEvent: async (req, res) => {
         try {
+            console.log('getOrgEvent :>> ', req.body);
             const page = parseInt(req.body.page) || 1;
             const limit = parseInt(req.body.limit) || 10;
             const skip = (page - 1) * limit;

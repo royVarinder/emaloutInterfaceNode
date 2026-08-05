@@ -15,6 +15,7 @@ const loginUserRoutes = require("./api/users/user.router");
 const cors = require("cors");           //Enable Cross-Origin Resource Sharing
 const {sequelize} = require('./models/index');
 const organizationRouter = require("./api/organizations/router");
+const requestLogger = require("./middleware/requestLogger");
 const storage = multer.diskStorage({    //Multer for File Storage
     destination : './upload/images',
     filename : (req,file, cb) =>{
@@ -34,6 +35,7 @@ const upload = multer({
 // Connect to DB
 connectDB().catch(console.error);
 app.use(express.json());
+app.use(requestLogger);
 app.use("/profile", express.static('upload/images'));
 app.use("/profile", express.static('upload/videos'));
 app.use(cors());

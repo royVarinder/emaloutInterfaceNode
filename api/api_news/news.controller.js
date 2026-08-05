@@ -125,7 +125,6 @@ module.exports = {
     getNewsController: async (req, res) => {
         try {
             const { channel_id, uuid, limit = 40, offset = 0 } = req.body;
-            console.log(' req.body :>> ',  req.body);
             let whereClause = {}
             if (channel_id) {
                 whereClause = { channel_id, status: "1" }

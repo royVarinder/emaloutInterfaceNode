@@ -13,6 +13,7 @@ const organizationEventsSchema = new Schema({
     event_type: String,
     guest_list: Array,
     event_time: String,
+    address  : String,
     organization: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organization",
