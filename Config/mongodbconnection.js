@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.APP_MONGO_CONNECTION_STRING, {
-      dbName: "EMALOUT",
+      dbName: "TAILER_APP",
     });
     console.log("✅ Connected to MongoDB:", conn.connection.host);
   } catch (err) {
