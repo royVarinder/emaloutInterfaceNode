@@ -28,6 +28,20 @@ const channelRouter = require("./api/channel/channel.router");
 const { default: axios } = require("axios");
 const { getServerIP, apiResponse } = require("./util");
 
+// Tailor app backend (ported from tailor-app/server — same routes, same
+// request/response shapes, so the tailor-app mobile client needs no changes
+// beyond pointing EXPO_PUBLIC_API_URL at this server).
+const tailorAuthRoutes = require("./tailor/routes/auth.routes");
+const tailorCustomersRoutes = require("./tailor/routes/customers.routes");
+const tailorMeasurementsRoutes = require("./tailor/routes/measurements.routes");
+const tailorOrdersRoutes = require("./tailor/routes/orders.routes");
+const tailorPaymentsRoutes = require("./tailor/routes/payments.routes");
+const tailorSettingsRoutes = require("./tailor/routes/settings.routes");
+const tailorDashboardRoutes = require("./tailor/routes/dashboard.routes");
+const tailorBackupRoutes = require("./tailor/routes/backup.routes");
+const { requireAuth: tailorRequireAuth } = require("./tailor/middleware/auth");
+const { errorHandler: tailorErrorHandler } = require("./tailor/middleware/errorHandler");
+
 const APP_NODE_URL = process.env.APP_NODE_URL;
 
 const upload = multer({
@@ -50,6 +64,17 @@ app.use("/api/users", loginUserRoutes);
 app.use("/api/organization", organizationRouter);
 app.use("/api/channel", channelRouter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Tailor app API — same paths as tailor-app/server (/api/auth, /api/customers, ...)
+app.use("/api/auth", tailorAuthRoutes);
+app.use("/api/customers", tailorRequireAuth, tailorCustomersRoutes);
+app.use("/api/measurements", tailorRequireAuth, tailorMeasurementsRoutes);
+app.use("/api/orders", tailorRequireAuth, tailorOrdersRoutes);
+app.use("/api/payments", tailorRequireAuth, tailorPaymentsRoutes);
+app.use("/api/settings", tailorRequireAuth, tailorSettingsRoutes);
+app.use("/api/dashboard", tailorRequireAuth, tailorDashboardRoutes);
+app.use("/api/backup", tailorRequireAuth, tailorBackupRoutes);
+app.use(tailorErrorHandler);
 
 
 //write a fucniton if api not found send 404 error
